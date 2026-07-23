@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>
+  <mat-icon color="primary">{{ isEditMode ? 'edit' : 'add_circle' }}</mat-icon>
+  {{ isEditMode ? 'Modifica Categoria' : 'Nuova Categoria' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form-layout">
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nome Categoria</mat-label>
+      <input matInput formControlName="name" placeholder="Es. Antipasti, Primi, Dolci..." maxlength="100">
+      <mat-icon matSuffix>category</mat-icon>
+
+      <mat-error *ngIf="form.get('name')?.hasError('required')">
+        Il nome della categoria è obbligatorio.
+      </mat-error>
+      <mat-error *ngIf="form.get('name')?.hasError('maxlength')">
+        Il nome non può superare i 100 caratteri.
+      </mat-error>
+    </mat-form-field>
+
+    <div *ngIf="isEditMode" class="full-width toggle-container">
+      <mat-slide-toggle formControlName="isActive" color="primary">
+        Categoria Attiva (Visibile nel Catalogo)
+      </mat-slide-toggle>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annulla</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()">
+    <mat-icon>save</mat-icon>
+    {{ isEditMode ? 'Salva Modifiche' : 'Crea Categoria' }}
+  </button>
+</mat-dialog-actions>

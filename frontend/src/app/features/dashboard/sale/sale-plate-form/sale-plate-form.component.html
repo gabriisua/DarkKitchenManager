@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Modifica Prezzo Piatto' : 'Nuovo Prezzo Bloccato' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form-layout">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Cliente</mat-label>
+      <mat-select formControlName="customerId">
+        <mat-option *ngFor="let c of customers()" [value]="c.id">{{ c.businessName }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('customerId')?.hasError('required')">Seleziona un cliente</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Piatto</mat-label>
+      <mat-select formControlName="plateId">
+        <mat-option *ngFor="let p of plates()" [value]="p.id">{{ p.name }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('plateId')?.hasError('required')">Seleziona un piatto</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Prezzo Fisso Concordato</mat-label>
+      <input matInput type="number" formControlName="overridePriceEuro" placeholder="Es. 8.50" step="0.01">
+      <span matTextSuffix>€</span>
+      <mat-error *ngIf="form.get('overridePriceEuro')?.hasError('required')">Obbligatorio</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Valido Dal (Opzionale)</mat-label>
+      <input matInput [matDatepicker]="fromPicker" formControlName="validFrom">
+      <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Valido Al (Opzionale)</mat-label>
+      <input matInput [matDatepicker]="toPicker" formControlName="validTo">
+      <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker></mat-datepicker>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annulla</button>
+  <button mat-flat-button color="primary" class="gold-btn" (click)="onSubmit()">
+    <mat-icon>save</mat-icon> Salva Prezzo
+  </button>
+</mat-dialog-actions>

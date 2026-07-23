@@ -1,0 +1,122 @@
+<aside class="sidebar mat-elevation-z2">
+
+  <mat-expansion-panel class="nav-panel mat-elevation-z0" [expanded]="isCucinaOpen()">
+    <mat-expansion-panel-header>
+      <mat-panel-title class="nav-panel-title">
+        <mat-icon>restaurant</mat-icon>
+        <span>CUCINA</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="nav-submenu">
+
+      <a
+        mat-list-item
+        routerLink="/ingredients"
+        routerLinkActive="active"
+      >
+        <span>Ingredienti</span>
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/plates"
+        routerLinkActive="active"
+      >
+        <span>Piatti</span>
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/categories"
+        routerLinkActive="active"
+      >
+        <span>Categorie</span>
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/allergens"
+        routerLinkActive="active"
+      >
+        <span>Allergeni</span>
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/menus"
+        routerLinkActive="active"
+      >
+        <span>Menu/Etichette</span>
+      </a>
+
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel class="nav-panel mat-elevation-z0" [expanded]="isUtenzeOpen()">
+    <mat-expansion-panel-header>
+      <mat-panel-title class="nav-panel-title">
+        <mat-icon>people</mat-icon>
+        <span>UTENZE</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="nav-submenu">
+
+      <a
+        mat-list-item
+        routerLink="/staff"
+        routerLinkActive="active"
+      >
+        <span>Staff</span>
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/customers"
+        routerLinkActive="active"
+      >
+        <span>Clienti</span>
+      </a>
+
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel class="nav-panel mat-elevation-z0" [expanded]="isOrdiniFattureOpen()">
+    <mat-expansion-panel-header>
+      <mat-panel-title class="nav-panel-title">
+        <mat-icon>receipt_long</mat-icon>
+        <span>ORDINI/FATTURE</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="nav-submenu">
+
+      <a
+        mat-list-item
+        routerLink="/sales"
+        routerLinkActive="active"
+      >
+        <span>Sconti</span>
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/orders"
+        routerLinkActive="active"
+      >
+        <span>Ordini</span>
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/invoices"
+        routerLinkActive="active"
+      >
+        <span>Fatturazione</span>
+      </a>
+
+    </div>
+  </mat-expansion-panel>
+
+</aside>

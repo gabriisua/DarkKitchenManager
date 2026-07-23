@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>
+  {{ isEditMode ? 'Modifica Utente: ' + data?.username : 'Nuovo Utente Staff' }}
+</h2>
+
+<mat-dialog-content>
+
+  <div *ngIf="serverError" class="error-msg">
+    {{ serverError }}
+  </div>
+
+  <form [formGroup]="editForm" class="dialog-form">
+
+    <mat-form-field appearance="outline" *ngIf="!isEditMode">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" type="text" placeholder="Es. m.rossi">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" placeholder="Es. mario@azienda.it">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ isEditMode ? 'Nuova Password (lascia vuoto per non modificare)' : 'Password' }}</mat-label>
+      <input matInput formControlName="password" type="password">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Ruolo</mat-label>
+      <mat-select formControlName="role">
+        <mat-option *ngFor="let role of availableRoles" [value]="role">
+          {{ role }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annulla</button>
+  <button mat-raised-button color="primary" [disabled]="editForm.invalid" (click)="save()">
+    Salva
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,101 @@
+@use '@angular/material' as mat;
+
+/* =========================================
+   PALETTE COLORI (BRAND IDENTITY)
+========================================= */
+$font-primary: 'Futura Std', 'Futura', 'Trebuchet MS', sans-serif;
+
+$gold: (
+  0: #000000,
+  10: #2c1e00,
+  20: #4a3400,
+  25: #5a3f00,
+  30: #6a4a00,
+  35: #7b5500,
+  40: #8c6100,
+  50: #ae7800,
+  60: #d09000,
+  70: #d4a20a, /* Giallo Senape Ufficiale */
+  80: #f0bc30,
+  90: #ffdea3,
+  95: #ffefd4,
+  98: #fff8f0,
+  99: #fffbff,
+  100: #ffffff,
+  secondary: (
+    0: #000000,
+    10: #1e1b16,
+    20: #34302a,
+    30: #4b463f,
+    40: #635e56,
+    50: #7c766e,
+    60: #969087,
+    70: #b1aaa1,
+    80: #cdc5bb,
+    90: #e9e1d7,
+    95: #f7efe5,
+    98: #fff8f0,
+    99: #fffbff,
+    100: #ffffff,
+  ),
+  neutral: (
+    0: #000000,
+    10: #1c1b1a,
+    20: #32302f,
+    30: #494745,
+    40: #615e5c,
+    50: #7a7774,
+    60: #94918e,
+    70: #afaba8,
+    80: #cac6c3,
+    90: #e6e2df,
+    95: #f5f0ed,
+    98: #fdf9f7,
+    99: #fffbff,
+    100: #ffffff,
+  ),
+  neutral-variant: (
+    0: #000000,
+    10: #1c1b19,
+    20: #32302d,
+    30: #494643,
+    40: #615e5a,
+    50: #7a7772,
+    60: #94908b,
+    70: #afaba5,
+    80: #cbc6c0,
+    90: #e7e2db,
+    95: #f6f0e9,
+    98: #fef8f1,
+    99: #fffbff,
+    100: #ffffff,
+  ),
+  error: (
+    0: #000000,
+    10: #410002,
+    20: #690005,
+    30: #93000a,
+    40: #ba1a1a,
+    50: #de3730,
+    60: #ff5449,
+    70: #ff897d,
+    80: #ffb4ab,
+    90: #ffdad6,
+    95: #ffedea,
+    98: #fff8f7,
+    99: #fffbff,
+    100: #ffffff,
+  ),
+);
+
+html {
+  height: 100%;
+  @include mat.theme((
+    color: (
+      primary: $gold,
+      tertiary: $gold,
+    ),
+    typography: $font-primary,
+    density: 0,
+  ));
+}

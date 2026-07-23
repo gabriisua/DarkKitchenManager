@@ -1,0 +1,53 @@
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.form-section h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Griglie per organizzare i campi */
+.grid-1 {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Assicura che i campi prendano tutta la larghezza della loro cella di griglia */
+mat-form-field {
+  width: 100%;
+}
+
+mat-divider {
+  margin: 16px 0;
+}
+
+.toggle-container {
+  margin-bottom: 16px;
+}
+
+/* Responsività per schermi più piccoli */
+@media (max-width: 600px) {
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

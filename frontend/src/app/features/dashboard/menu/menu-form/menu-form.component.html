@@ -1,0 +1,133 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="inline-flex-center gap-16">
+      <button mat-icon-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2>
+        {{ isEditMode ? 'Modifica Menu' : 'Nuovo Menu' }}
+      </h2>
+    </div>
+    <div class="flex-row gap-8">
+      <button mat-flat-button color="primary" class="gold-btn" (click)="onSubmit()">
+        <mat-icon>save</mat-icon>
+        Salva Menu
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="form" class="form-layout">
+
+    <div class="form-main">
+      <mat-card class="mat-elevation-z1 form-card">
+        <mat-card-header>
+          <mat-card-title>Informazioni Generali</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="grid-layout mt-16">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nome Menu</mat-label>
+            <input matInput formControlName="name" placeholder="Es. Menu Primavera 2026">
+            <mat-error *ngIf="form.get('name')?.hasError('required')">Obbligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width grid-col-span-2">
+            <mat-label>Descrizione</mat-label>
+            <textarea matInput formControlName="description" rows="3" placeholder="Descrizione del menu..."></textarea>
+          </mat-form-field>
+
+          <div class="full-width toggle-container">
+            <mat-slide-toggle formControlName="isActive" color="primary">
+              Menu Attivo
+            </mat-slide-toggle>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Cliente (Prezzi Dedicati)</mat-label>
+            <mat-select formControlName="customerId">
+              <mat-option [value]="null">Nessun cliente (Menu Globale)</mat-option>
+              <mat-option *ngFor="let c of customers()" [value]="c.id">
+                {{ c.businessName || c.email }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Seleziona un cliente per creare una lista prezzi dedicata</mat-hint>
+          </mat-form-field>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="form-sidebar">
+      <mat-card class="mat-elevation-z1 form-card">
+        <mat-card-header>
+          <mat-card-title>Piatti del Menu</mat-card-title>
+          <mat-card-subtitle>Cerca e aggiungi piatti al menu</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="mt-16">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Cerca e aggiungi piatto...</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input type="text"
+                   matInput
+                   [formControl]="searchPlateCtrl"
+                   [matAutocomplete]="auto">
+
+            <mat-autocomplete #auto="matAutocomplete"
+                              [displayWith]="displayPlateName"
+                              (optionSelected)="onPlateSelected($event)">
+              <mat-option *ngFor="let plate of searchResults()" [value]="plate">
+                <span>{{ plate.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <div formArrayName="menuItems" class="items-list">
+
+            <div *ngIf="menuItemsArray.controls.length === 0" class="empty-state">
+              Nessun piatto aggiunto. Cerca qui sopra.
+            </div>
+
+            <div class="item-row" *ngFor="let ctrl of menuItemsArray.controls; let i = index" [formGroupName]="i">
+
+              <div class="item-info">
+                <strong>{{ ctrl.get('plateName')?.value }}</strong>
+              </div>
+
+              <mat-form-field appearance="outline" class="item-price-field" subscriptSizing="dynamic">
+                <mat-label>Prezzo B2B</mat-label>
+                <input matInput type="number" formControlName="overridePriceEuro" placeholder="Es. 12.50" step="0.01" min="0">
+                <span matTextSuffix>€</span>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="item-date-field" subscriptSizing="dynamic">
+                <mat-label>Dal</mat-label>
+                <input matInput [matDatepicker]="fromPicker" formControlName="availableFrom" placeholder="GG/MM/AAAA">
+                <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                <mat-datepicker #fromPicker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="item-date-field" subscriptSizing="dynamic">
+                <mat-label>Al</mat-label>
+                <input matInput [matDatepicker]="toPicker" formControlName="availableTo" placeholder="GG/MM/AAAA">
+                <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+                <mat-datepicker #toPicker></mat-datepicker>
+              </mat-form-field>
+
+              <div class="item-actions">
+                <button mat-icon-button color="warn" (click)="removePlate(i)" matTooltip="Rimuovi dal menu">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </form>
+</div>

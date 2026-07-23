@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Stampa Etichetta ZPL</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="print-settings-form">
+
+    <mat-form-field appearance="outline">
+      <mat-label> Totale Copie</mat-label>
+      <input matInput type="number" formControlName="copies" min="1">
+      <mat-error>Il numero di copie deve essere almeno 1</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Pausa (n. etichette)</mat-label>
+      <input matInput type="number" formControlName="pauseAfter" min="0">
+      <mat-error>La pausa non può essere negativa</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Lotto</mat-label>
+      <input matInput formControlName="lotNumber" required>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Annulla</button>
+  <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="confirm()">
+    <mat-icon>print</mat-icon>
+    Stampa
+  </button>
+</mat-dialog-actions>

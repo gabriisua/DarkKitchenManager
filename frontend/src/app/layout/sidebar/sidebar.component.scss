@@ -1,0 +1,145 @@
+/* Sfondo bianco pulito, come da manuale brand */
+$sidebar-bg: #ffffff;
+$sidebar-hover: #f5f5f5; /* Un grigio leggermente più marcato per l'hover */
+$sidebar-active-bg: var(--gold-primary-light); /* Sfondo giallino per la voce attiva */
+$text-primary: #000000;
+$text-muted: #757575;
+$border-color: #e0e0e0;
+$radius-standard: 8px;
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  height: 100vh;
+  background-color: $sidebar-bg;
+  border-right: 1px solid $border-color;
+  padding: 24px 0;
+  box-sizing: border-box;
+
+  a[mat-list-item] {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: $text-muted !important; /* Di base le voci non attive sono grigie */
+    text-decoration: none;
+    margin: 4px 16px;
+    padding: 0 16px !important;
+    height: 44px; /* Leggermente più alto per un design più arioso */
+    border-radius: $radius-standard;
+    transition: all 0.2s ease;
+
+    mat-icon {
+      color: $text-muted;
+      transition: color 0.2s ease;
+    }
+
+    &:hover {
+      background-color: $sidebar-hover !important;
+      color: $text-primary !important; /* Su hover il testo diventa nero */
+
+      mat-icon {
+        color: $text-primary;
+      }
+    }
+
+    &.active {
+      background-color: $sidebar-active-bg !important;
+      color: #000000 !important;
+      font-weight: 600;
+
+      /* RIMOSSO il border-left che spezzava l'angolo */
+      border-left: none;
+
+      /* Manteniamo l'arrotondamento perfetto e identico su tutti e 4 i lati */
+      border-radius: $radius-standard !important;
+
+      /* OPZIONALE: Se vuoi comunque una linea di accento dorata senza rovinare l'angolo,
+         puoi usare un'ombra interna (box-shadow) che segue perfettamente la curva del raggio! */
+      box-shadow: inset 4px 0 0 0 var(--gold-primary);
+
+      mat-icon {
+        color: var(--gold-primary) !important;
+      }
+    }
+
+    span {
+      line-height: 24px;
+      font-size: 14px;
+    }
+  }
+
+  .nav-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: $text-primary;
+    margin: 0;
+
+    mat-icon {
+      color: $text-muted;
+      width: 24px;
+      height: 24px;
+      font-size: 24px;
+    }
+
+    span {
+      line-height: 24px;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+    }
+  }
+
+  .mat-expansion-panel-header {
+    height: 48px !important;
+    padding: 0 16px !important;
+    margin: 0 16px;
+    border-radius: $radius-standard;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: $sidebar-hover !important;
+    }
+
+    &.mat-expanded {
+      background-color: transparent !important;
+
+      .nav-panel-title {
+        color: #000000; /* Corretto: prima diventava bianco! */
+
+        mat-icon {
+          color: var(--gold-primary);
+        }
+      }
+    }
+  }
+
+  .nav-submenu {
+    display: flex;
+    flex-direction: column;
+    padding-left: 16px;
+    margin-top: 4px;
+
+    a[mat-list-item] {
+      height: 40px;
+      margin: 2px 16px;
+
+      span {
+        font-size: 13px;
+      }
+
+      &.active {
+        border-left-width: 3px;
+      }
+    }
+  }
+
+  .mat-expansion-panel-content .mat-expansion-panel-body {
+    padding: 0 !important;
+  }
+
+  .mat-expansion-indicator::after {
+    color: $text-muted;
+  }
+}

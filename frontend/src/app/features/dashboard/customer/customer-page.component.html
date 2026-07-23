@@ -1,0 +1,102 @@
+<div class="page-container">
+    <div class="page-header">
+      <h1 class="mat-headline-4" >Gestione Clienti</h1>
+    </div>
+
+  <app-data-grid
+    [columns]="columns"
+    [data]="data()"
+    [totalItems]="totalItems()"
+    [loading]="loading()"
+    [error]="error()"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+    (retry)="refreshTable()"
+  >
+
+    <div gridSearch class="toolbar-row">
+
+      <mat-form-field appearance="outline" class="toolbar-field search-field">
+        <mat-label>Cerca clienti...</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearch($event)"
+          placeholder="Email o ragione sociale">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="toolbar-field">
+        <mat-label>Tipo</mat-label>
+        <mat-select
+          [(value)]="filters.type"
+          (valueChange)="onFilterChange()">
+          <mat-option value="">Tutti</mat-option>
+          <mat-option value="B2B">B2B</mat-option>
+          <mat-option value="B2C">B2C</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="toolbar-field">
+        <mat-label>Stato</mat-label>
+        <mat-select
+          [(value)]="filters.isActive"
+          (valueChange)="onFilterChange()">
+          <mat-option [value]="null">Tutti</mat-option>
+          <mat-option [value]="true">Attivo</mat-option>
+          <mat-option [value]="false">Inattivo</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-stroked-button
+        class="toolbar-field"
+        (click)="resetFilters()"
+        matTooltip="Resetta tutti i filtri"
+        [disabled]="!searchTerm && !filters.type && filters.isActive === null">
+        <mat-icon>clear_all</mat-icon>
+        Reset
+      </button>
+
+      <div class="spacer"></div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="toolbar-cta"
+        (click)="addCustomer()">
+        <mat-icon>add</mat-icon>
+        Nuovo Cliente
+      </button>
+
+    </div>
+
+    <ng-template
+      #actionsTemplate
+      let-row>
+
+      <div class="action-buttons-container">
+
+        <button
+          mat-icon-button
+          color="primary"
+          matTooltip="Modifica"
+          (click)="editCustomer(row)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          color="warn"
+          matTooltip="Elimina"
+          (click)="deleteCustomer(row)">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+      </div>
+
+    </ng-template>
+
+  </app-data-grid>
+
+</div>

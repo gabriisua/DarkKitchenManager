@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Roscoff.Api/Roscoff.Api.csproj" />
+    <Project Path="src/Roscoff.Application/Roscoff.Application.csproj" />
+    <Project Path="src/Roscoff.Core/Roscoff.Core.csproj" />
+    <Project Path="src/Roscoff.Infrastructure/Roscoff.Infrastructure.csproj" />
+  </Folder>
+</Solution>

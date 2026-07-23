@@ -1,0 +1,51 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="mat-headline-4" >Gestione Staff</h1>
+  </div>
+  <app-data-grid
+    [columns]="columns"
+    [data]="data()"
+    [totalItems]="totalItems()"
+    [loading]="loading()"
+    [error]="error()"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+    (retry)="refreshTable()"
+  >
+    <div gridSearch class="toolbar-row">
+
+      <mat-form-field appearance="outline" class="toolbar-field search-field">
+        <mat-label>Cerca staff...</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearch($event)" placeholder="Es. Mario Rossi">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <button
+        mat-stroked-button
+        (click)="clearFilters()"
+        matTooltip="Resetta i filtri"
+        [disabled]="!hasActiveFilters()">
+        <mat-icon>clear_all</mat-icon>
+        Reset
+      </button>
+
+      <div class="spacer"></div>
+
+      <button mat-raised-button color="primary" class="toolbar-cta" (click)="addStaff()">
+        <mat-icon>add</mat-icon> Nuovo Utente
+      </button>
+    </div>
+
+    <ng-template #actionsTemplate let-row>
+      <div class="action-buttons-container">
+        <button mat-icon-button color="primary" (click)="editStaff(row)" matTooltip="Modifica">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button mat-icon-button color="warn" (click)="deleteStaff(row)" matTooltip="Elimina">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </ng-template>
+  </app-data-grid>
+</div>

@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>
+  {{ isEditMode ? 'Modifica Allergene: ' + data?.name : 'Nuovo Allergene' }}
+</h2>
+
+<mat-dialog-content>
+  @if (serverError) {
+    <div class="error-msg">
+      {{ serverError }}
+    </div>
+  }
+
+  <form [formGroup]="allergenForm" class="dialog-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nome Allergene</mat-label>
+      <input matInput formControlName="name" type="text" placeholder="Es. Glutine, Crostacei...">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Codice Identificativo</mat-label>
+      <input matInput formControlName="code" type="text" placeholder="Es. GLU, CRO...">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descrizione / Note</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Informazioni aggiuntive o estese..."></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annulla</button>
+  <button mat-raised-button color="primary" [disabled]="allergenForm.invalid" (click)="save()">
+    Salva
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,68 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="mat-headline-4" >Gestione Ordini</h1>
+</div>
+  <mat-divider></mat-divider>
+  <app-data-grid
+    [columns]="columns"
+    [data]="data()"
+    [totalItems]="totalItems()"
+    [loading]="loading()"
+    [error]="error()"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (retry)="refreshTable()"
+  >
+
+    <div gridSearch class="toolbar-row">
+
+      <mat-form-field appearance="outline" class="toolbar-field">
+        <mat-label>Data Consegna</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate [(ngModel)]="filters.dateFrom" (dateChange)="onFilterChange()" placeholder="Inizio">
+          <input matEndDate [(ngModel)]="filters.dateTo" (dateChange)="onFilterChange()" placeholder="Fine">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="toolbar-field">
+        <mat-label>Filtra per Stato</mat-label>
+        <mat-select
+          [(value)]="filters.status"
+          (valueChange)="onFilterChange()">
+          <mat-option [value]="null">Tutti gli stati</mat-option>
+          <mat-option [value]="OrderStatus.Pending">In Attesa</mat-option>
+          <mat-option [value]="OrderStatus.InProduction">In Cucina</mat-option>
+          <mat-option [value]="OrderStatus.Shipped">In Consegna (Bolla)</mat-option>
+          <mat-option [value]="OrderStatus.Delivered">Consegnato</mat-option>
+          <mat-option [value]="OrderStatus.Cancelled">Annullato</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="spacer"></div>
+
+      <button mat-raised-button color="primary" class="toolbar-cta" (click)="goToCreateOrder()">
+        <mat-icon>add_shopping_cart</mat-icon>
+        Nuovo Ordine
+      </button>
+
+    </div>
+
+    <ng-template #actionsTemplate let-row>
+      <div class="action-buttons-container">
+
+        <button mat-icon-button color="primary" matTooltip="Dettaglio Ordine" (click)="viewDetails(row)">
+          <mat-icon>visibility</mat-icon>
+        </button>
+
+        <button mat-icon-button color="accent" matTooltip="Cambia Stato" (click)="changeStatus(row)">
+          <mat-icon>local_shipping</mat-icon>
+        </button>
+
+      </div>
+    </ng-template>
+
+  </app-data-grid>
+
+</div>

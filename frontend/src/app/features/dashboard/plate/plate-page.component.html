@@ -1,0 +1,115 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="mat-headline-4" >Gestione Piatti</h1>
+  </div>
+  <mat-divider></mat-divider>
+  <app-data-grid
+    [columns]="columns"
+    [data]="data()"
+    [totalItems]="totalItems()"
+    [loading]="loading()"
+    [error]="error()"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+    (retry)="refreshTable()"
+  >
+
+    <div gridSearch class="toolbar-row">
+
+      <mat-form-field appearance="outline" class="toolbar-field search-field">
+        <mat-label>Cerca piatti...</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearch($event)"
+          placeholder="Nome piatto...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Categoria</mat-label>
+        <mat-select [(value)]="filters.categoryId" (valueChange)="onFilterChange()">
+          <mat-option [value]="null">Tutte</mat-option>
+          @for (cat of categories; track cat.id) {
+            <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Linea Commerciale</mat-label>
+        <mat-select [(value)]="filters.lineType" (valueChange)="onFilterChange()">
+          <mat-option [value]="null">Tutte</mat-option>
+          @for (line of lineTypes; track line.value) {
+            <mat-option [value]="line.value">{{ line.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="range-pair">
+        <mat-form-field appearance="outline">
+          <mat-label>Prezzo min (€)</mat-label>
+          <input matInput type="number" [(ngModel)]="filters.minPrice" (ngModelChange)="onFilterChange()" placeholder="0">
+        </mat-form-field>
+        <span>—</span>
+        <mat-form-field appearance="outline">
+          <mat-label>Prezzo max (€)</mat-label>
+          <input matInput type="number" [(ngModel)]="filters.maxPrice" (ngModelChange)="onFilterChange()" placeholder="999">
+        </mat-form-field>
+      </div>
+
+      <button
+        mat-stroked-button
+        (click)="resetFilters()"
+        matTooltip="Resetta tutti i filtri"
+        [disabled]="!searchTerm && filters.categoryId === null && filters.lineType === null && filters.isActive === null && filters.minPrice === null && filters.maxPrice === null">
+        <mat-icon>clear_all</mat-icon>
+        Reset
+      </button>
+
+      <div class="spacer"></div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="toolbar-cta"
+        (click)="addPlate()">
+        <mat-icon>add</mat-icon>
+        Nuovo Piatto
+      </button>
+
+    </div>
+
+    <ng-template #actionsTemplate let-row>
+      <div class="action-buttons-container">
+
+        <button
+          mat-icon-button
+          class="view-detail-btn"
+          matTooltip="Vedi Dettagli (Food Cost e Nutrizionali)"
+          (click)="viewPlateDetail(row)">
+          <mat-icon>visibility</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          color="primary"
+          matTooltip="Modifica"
+          (click)="editPlate(row)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          color="warn"
+          matTooltip="Elimina"
+          (click)="deletePlate(row)">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+      </div>
+    </ng-template>
+
+  </app-data-grid>
+
+</div>

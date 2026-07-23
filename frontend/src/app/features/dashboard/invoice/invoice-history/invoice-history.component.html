@@ -1,0 +1,59 @@
+<div class="page-container">
+  <div class="page-header">
+    <button mat-icon-button routerLink="/invoices" matTooltip="Torna alla fatturazione">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1 class="mat-headline-4">Storico Fatture</h1>
+  </div>
+
+  <app-data-grid
+    [columns]="columns"
+    [data]="data()"
+    [totalItems]="totalItems()"
+    [loading]="loading()"
+    [error]="error()"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+    (retry)="refreshTable()"
+  >
+    <div gridSearch class="toolbar-row">
+      <mat-form-field appearance="outline" class="toolbar-field search-field">
+        <mat-label>Cerca fatture...</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearch($event)" placeholder="Num. fattura o cliente">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="toolbar-field date-field">
+        <mat-label>Da</mat-label>
+        <input matInput [matDatepicker]="fromPicker" [(ngModel)]="dateFrom" (dateChange)="onDateFilterChange()" placeholder="gg/mm/aaaa">
+        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="toolbar-field date-field">
+        <mat-label>A</mat-label>
+        <input matInput [matDatepicker]="toPicker" [(ngModel)]="dateTo" (dateChange)="onDateFilterChange()" placeholder="gg/mm/aaaa">
+        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-stroked-button (click)="resetFilters()" matTooltip="Resetta i filtri" [disabled]="!searchTerm && !dateFrom && !dateTo">
+        <mat-icon>clear_all</mat-icon>
+        Reset
+      </button>
+
+      <div class="spacer"></div>
+    </div>
+
+    <ng-template #actionsTemplate let-row>
+      <div class="action-buttons-container">
+        <button mat-icon-button color="primary" matTooltip="Scarica PDF" (click)="downloadPdf(row)">
+          <mat-icon>download</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" matTooltip="Elimina" (click)="deleteInvoice(row)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </ng-template>
+  </app-data-grid>
+</div>

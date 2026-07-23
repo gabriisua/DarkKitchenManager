@@ -1,0 +1,244 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="inline-flex-center gap-16">
+      <button mat-icon-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2>
+        {{ isEditMode ? 'Modifica Piatto' : 'Nuovo Piatto' }}
+      </h2>
+    </div>
+    <button mat-flat-button color="primary" class="gold-btn" (click)="onSubmit()">
+      <mat-icon>save</mat-icon>
+      Salva Piatto
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="form-layout">
+
+    <div class="form-main">
+      <mat-card class="mat-elevation-z1 form-card">
+        <mat-card-header>
+          <mat-card-title>Informazioni Generali</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="grid-layout mt-16">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Codice Articolo (Opzionale)</mat-label>
+            <input matInput formControlName="code" placeholder="Es. P-001">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nome Piatto</mat-label>
+            <input matInput formControlName="name" placeholder="Es. Spaghetti alla Carbonara">
+            <mat-error *ngIf="form.get('name')?.hasError('required')">Obbligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Categoria</mat-label>
+            <mat-select formControlName="categoryId">
+              <mat-option *ngFor="let cat of categories" [value]="cat.id">
+                {{ cat.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('categoryId')?.hasError('required')">Obbligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width grid-col-span-2">
+            <mat-label>Descrizione / Note Preparazione</mat-label>
+            <textarea matInput formControlName="description" rows="3"></textarea>
+          </mat-form-field>
+
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mat-elevation-z1 form-card mt-16">
+        <mat-card-header>
+          <mat-card-title>Dati di Vendita</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="grid-layout mt-16">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Prezzo di Vendita (Base)</mat-label>
+            <input matInput type="number" formControlName="basePrice" placeholder="0">
+            <span matTextSuffix>€</span>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Costo Packaging</mat-label>
+            <input matInput type="number" formControlName="packagingCost" placeholder="0">
+            <span matTextSuffix>€</span>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Aliquota IVA (%)</mat-label>
+            <input matInput type="number" formControlName="vatRate" placeholder="10">
+            <span matTextSuffix>%</span>
+          </mat-form-field>
+
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mat-elevation-z1 form-card mt-16">
+        <mat-card-header>
+          <mat-card-title>Dati di Preparazione ed Etichetta</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="grid-layout mt-16">
+
+          <mat-form-field appearance="outline" class="full-width grid-col-span-2">
+            <mat-label>Codice a Barre (EAN)</mat-label>
+            <input matInput formControlName="eanCode" placeholder="Es. 8012345678901">
+            <mat-error *ngIf="form.get('eanCode')?.hasError('minlength')">Minimo 8 caratteri</mat-error>
+            <mat-error *ngIf="form.get('eanCode')?.hasError('maxlength')">Massimo 13 caratteri</mat-error>
+          </mat-form-field>
+
+          <div class="grid-col-span-2 flex-row gap-16">
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Potenza Microonde</mat-label>
+              <input matInput type="number" formControlName="microwaveWattage" placeholder="Es. 850">
+              <span matTextSuffix>W</span>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Tempo Microonde</mat-label>
+              <input matInput type="number" step="0.5" formControlName="microwaveMinutes" placeholder="Es. 3.5">
+              <span matTextSuffix>min</span>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width grid-col-span-2">
+            <mat-label>Altre Istruzioni (Es. Forno)</mat-label>
+            <textarea matInput formControlName="preparationInstructions" rows="2" placeholder="Es. In forno a 180°C per 15 min"></textarea>
+          </mat-form-field>
+
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mat-elevation-z1 form-card mt-16">
+        <mat-card-header>
+          <mat-card-title>Dati Logistici e Scheda Tecnica</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="grid-layout mt-16">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Tipologia Prodotto</mat-label>
+            <input matInput formControlName="productType" placeholder="Es. Preparazione gastronomica">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Shelf Life (Scadenza)</mat-label>
+            <input matInput type="number" formControlName="daysToExpire" placeholder="3">
+            <span matTextSuffix>Giorni</span>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width grid-col-span-2">
+            <mat-label>Specifiche Confezione / Imballo</mat-label>
+            <textarea matInput formControlName="packagingDescription" rows="2" placeholder="Es. Vaschetta in polipropilene per alimenti..."></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width grid-col-span-2">
+            <mat-label>Modalità di Conservazione</mat-label>
+            <input matInput formControlName="storageConditions" placeholder="Es. Conservare in frigo tra 0°C e +4°C">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width grid-col-span-2">
+            <mat-label>Tecnologia di Confezionamento</mat-label>
+            <input matInput formControlName="preservationTechnology" placeholder="Es. Confezionato in atmosfera protettiva (ATM).">
+          </mat-form-field>
+
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mat-elevation-z1 form-card mt-16">
+        <mat-card-header>
+          <mat-card-title>Linee e Iconografie (Clienti Esterni)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="grid-layout mt-16">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Linea Commerciale (Interna)</mat-label>
+            <mat-select formControlName="lineType">
+              <mat-option *ngFor="let line of lineTypes" [value]="line.value">
+                {{ line.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Icona Dietetica</mat-label>
+            <mat-select formControlName="dietaryIcon">
+              <mat-option *ngFor="let icon of dietaryIcons" [value]="icon.value">
+                {{ icon.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+    <div class="form-sidebar">
+      <mat-card class="mat-elevation-z1 form-card">
+        <mat-card-header>
+          <mat-card-title>Distinta Base</mat-card-title>
+          <mat-card-subtitle>Aggiungi ingredienti e grammature</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="mt-16">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Cerca e aggiungi ingrediente...</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input type="text"
+                   matInput
+                   [formControl]="searchIngredientCtrl"
+                   [matAutocomplete]="auto">
+
+            <mat-autocomplete #auto="matAutocomplete"
+                              [displayWith]="displayIngredientName"
+                              (optionSelected)="onIngredientSelected($event)">
+              <mat-option *ngFor="let ing of searchResults()" [value]="ing">
+                <div class="flex-row-space-between full-width">
+                  <span>{{ ing.name }}</span>
+                  <small class="text-muted">{{ ing.costPer1000g | currency:'EUR' }}/kg</small>
+                </div>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+
+          <div formArrayName="ingredients" class="ingredients-list">
+
+            <div *ngIf="ingredientsArray.controls.length === 0" class="empty-state">
+              Nessun ingrediente aggiunto. Cerca qui sopra.
+            </div>
+
+            <div class="ingredient-row" *ngFor="let ctrl of ingredientsArray.controls; let i = index" [formGroupName]="i">
+
+              <div class="ing-name">
+                <strong>{{ ctrl.get('ingredientName')?.value }}</strong>
+              </div>
+
+              <div class="ing-weight">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <input matInput type="number" formControlName="weightInGrams" placeholder="Peso" min="1">
+                  <span matTextSuffix>g</span>
+                </mat-form-field>
+              </div>
+
+              <button mat-icon-button color="warn" (click)="removeIngredient(i)" matTooltip="Rimuovi">
+                <mat-icon>close</mat-icon>
+              </button>
+
+            </div>
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </form>
+</div>

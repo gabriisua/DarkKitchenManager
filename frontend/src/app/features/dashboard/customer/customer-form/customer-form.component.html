@@ -1,0 +1,151 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="header-title">
+      <button mat-icon-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2>{{ isEditMode ? 'Modifica Cliente' : 'Nuovo Cliente' }}</h2>
+    </div>
+    <div class="header-actions">
+      <button mat-button (click)="goBack()">Annulla</button>
+      <button mat-raised-button color="primary" (click)="save()">
+        <mat-icon>save</mat-icon>
+        Salva Cliente
+      </button>
+    </div>
+  </div>
+
+  <mat-tab-group class="form-tabs" animationDuration="0ms">
+
+    <mat-tab label="Dati Principali">
+      <div class="tab-content">
+        <form [formGroup]="customerForm">
+
+          <div class="form-section">
+            <h3 class="section-title">Contatto Principale</h3>
+            <div class="grid-1">
+              <mat-form-field appearance="outline">
+                <mat-label>Email (Login / Comunicazioni)</mat-label>
+                <input matInput formControlName="email" type="email">
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="section-title">Anagrafica Fiscale</h3>
+            <div class="grid-4">
+              <mat-form-field appearance="outline" class="col-span-1">
+                <mat-label>Tipo Cliente</mat-label>
+                <mat-select formControlName="type">
+                  <mat-option value="B2B">B2B (Azienda)</mat-option>
+                  <mat-option value="B2C">B2C (Privato)</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="col-span-3">
+                <mat-label>Ragione Sociale / Nome</mat-label>
+                <input matInput formControlName="businessName">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Partita IVA</mat-label>
+                <input matInput formControlName="vatNumber">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Codice Fiscale</mat-label>
+                <input matInput formControlName="fiscalCode">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Codice SDI</mat-label>
+                <input matInput formControlName="sdiCode">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>PEC</mat-label>
+                <input matInput formControlName="pec">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Giorni Dilazione Pagamento</mat-label>
+                <input matInput type="number" formControlName="paymentTermsDays" placeholder="Es. 30, 60">
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-section last-section">
+            <h3 class="section-title">{{ isEditMode ? 'Indirizzo Sede Logistica Predefinita' : 'Dati Prima Consegna' }}</h3>
+            <div class="grid-4">
+              <mat-form-field appearance="outline" class="col-span-4">
+                <mat-label>Indirizzo</mat-label>
+                <input matInput formControlName="shippingAddress">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="col-span-2">
+                <mat-label>Città</mat-label>
+                <input matInput formControlName="city">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="col-span-1">
+                <mat-label>CAP</mat-label>
+                <input matInput formControlName="zipCode">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="col-span-1">
+                <mat-label>Telefono Contatto Principale</mat-label>
+                <input matInput formControlName="contactPhone">
+              </mat-form-field>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Sedi Logistiche (Hubs)" *ngIf="isEditMode">
+      <div class="tab-content hubs-container">
+
+        <div class="hubs-header">
+          <div>
+            <h3>Punti di Consegna</h3>
+            <p class="text-muted">Gestisci gli hub operativi in cui il cliente riceverà la merce.</p>
+          </div>
+          <button mat-stroked-button color="primary" (click)="openHubDialog()">
+            <mat-icon>add</mat-icon>
+            Aggiungi Sede
+          </button>
+        </div>
+
+        <div class="hubs-grid">
+          <div class="hub-card" *ngFor="let hub of deliveryHubs">
+            <div class="hub-info">
+              <h4>
+                {{ hub.name }}
+                <span class="badge-default" *ngIf="hub.isDefault">Predefinito</span>
+              </h4>
+              <p><mat-icon class="small-icon">location_on</mat-icon> {{ hub.shippingAddress }}, {{ hub.city }} ({{ hub.zipCode }})</p>
+              <p *ngIf="hub.contactPhone"><mat-icon class="small-icon">phone</mat-icon> {{ hub.contactPhone }}</p>
+            </div>
+            <div class="hub-actions">
+              <button mat-icon-button color="primary" (click)="editHub(hub)" matTooltip="Modifica">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteHub(hub.id)" matTooltip="Elimina">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="deliveryHubs.length === 0" class="empty-state">
+            <mat-icon class="empty-icon">business</mat-icon>
+            <p>Nessuna sede logistica aggiuntiva trovata.</p>
+          </div>
+        </div>
+
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

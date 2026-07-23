@@ -1,0 +1,95 @@
+@if (ui.confirm().visible) {
+  <div class="ui-backdrop"></div>
+
+  <div class="ui-modal">
+    <div class="ui-modal-header">
+      {{ ui.confirm().title }}
+    </div>
+
+    <div class="ui-modal-body">
+      {{ ui.confirm().message }}
+    </div>
+
+    <div class="ui-modal-actions">
+      <button mat-button (click)="ui.confirmNo()">
+        Annulla
+      </button>
+      <button mat-raised-button color="warn" (click)="ui.confirmYes()">
+        Conferma
+      </button>
+    </div>
+  </div>
+}
+
+@if (ui.alertState().visible) {
+  <div class="ui-backdrop"></div>
+
+  <div class="ui-modal alert-modal">
+    <div class="ui-modal-header alert-header">
+      <mat-icon>warning</mat-icon>
+      {{ ui.alertState().title }}
+    </div>
+
+    <div class="ui-modal-body">
+      {{ ui.alertState().message }}
+    </div>
+
+    <div class="ui-modal-actions">
+      <button mat-flat-button class="gold-btn" (click)="ui.closeAlert()">
+        Ho capito
+      </button>
+    </div>
+  </div>
+
+}
+@if (ui.toast().visible) {
+  <div class="ui-toast" [ngClass]="ui.toast().type">
+    <mat-icon>{{ ui.toast().type === 'success' ? 'check_circle' : 'error' }}</mat-icon>
+    <span>{{ ui.toast().message }}</span>
+  </div>
+}
+
+@if (ui.confirm().visible) {
+  <div class="ui-backdrop"></div>
+
+  <div class="ui-modal">
+    <div class="ui-modal-header">
+      {{ ui.confirm().title }}
+    </div>
+
+    <div class="ui-modal-body">
+      {{ ui.confirm().message }}
+    </div>
+
+    <div class="ui-modal-actions">
+      <button mat-button (click)="ui.confirmNo()">
+        Annulla
+      </button>
+      <button mat-raised-button color="warn" (click)="ui.confirmYes()">
+        Conferma
+      </button>
+    </div>
+  </div>
+}
+
+@if (ui.alertState().visible) {
+  <div class="ui-backdrop"></div>
+
+  <div class="ui-modal alert-modal">
+    <div class="ui-modal-header alert-header">
+      <mat-icon>warning</mat-icon>
+      {{ ui.alertState().title }}
+    </div>
+
+    <div class="ui-modal-body">
+      {{ ui.alertState().message }}
+    </div>
+
+    <div class="ui-modal-actions">
+      <button mat-flat-button class="gold-btn" (click)="ui.closeAlert()">
+        Ho capito
+      </button>
+    </div>
+  </div>
+}
+

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SuperSecretStagingPwd123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    # L'healthcheck dice a Docker di interrogare il DB finché non è pronto
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "SuperSecretStagingPwd123!", "-C", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  
+  backend:
+    build:
+      context: ./backend # Cambia in ./be-roscoff se la tua cartella si chiama così
+      dockerfile: src/Roscoff.Api/Dockerfile
+    container_name: be-darkkitchenmanager
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+      # Inseriamo la stringa di connessione esplicita come nella tua versione funzionante
+      - ConnectionStrings__DefaultConnection=Server=db;Database=Roscoff_Staging;User Id=sa;Password=SuperSecretStagingPwd123!;TrustServerCertificate=True;
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy # Il backend aspetta che l'healthcheck del DB dia esito positivo
+
+  frontend:
+    build:
+      context: ./frontend # Cambia in ./fe-roscoff se la tua cartella si chiama così
+    container_name: fe-darkkitchenmanager
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  sql_data:

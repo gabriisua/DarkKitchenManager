@@ -1,0 +1,106 @@
+<div class="grid-wrapper">
+  <!-- Content projection slot: entity-specific filter section -->
+  <div class="filter-section">
+    <ng-content select="[gridFilters]"></ng-content>
+  </div>
+
+  <!-- Search field slot (optional, projected by smart component) -->
+  <div class="search-section">
+    <ng-content select="[gridSearch]"></ng-content>
+  </div>
+
+  <!-- Error state -->
+  @if (error; as errMsg) {
+    <div class="error-banner">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <span class="error-text">{{ errMsg }}</span>
+      <button mat-stroked-button color="warn" (click)="retry.emit()">
+        <mat-icon>refresh</mat-icon> Riprova
+      </button>
+    </div>
+  }
+
+  <!-- Loading overlay -->
+  @if (loading) {
+    <div class="loading-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  }
+
+  <!-- Table area -->
+  <div class="table-container" [class.loading]="loading">
+    <table mat-table [dataSource]="data" matSort (matSortChange)="onSortChange($event)" class="full-width">
+
+      <!-- Dynamic columns from ColumnDef[] config -->
+      @for (col of columns; track trackByField($index, col)) {
+        <ng-container [matColumnDef]="col.field">
+          <th mat-header-cell *matHeaderCellDef
+              [mat-sort-header]="col.sortable !== false ? col.field : ''"
+              [style.width]="col.width || 'auto'"
+              [style.min-width]="col.width || 'auto'">
+            {{ col.header }}
+          </th>
+          <td mat-cell *matCellDef="let row"
+              [style.width]="col.width || 'auto'"
+              [style.min-width]="col.width || 'auto'">
+            @switch (col.cellType || 'text') {
+              @case ('chip') {
+                <mat-chip [color]="row[col.field] ? 'primary' : 'warn'" selected>
+                  {{ getCellValue(row, col.field) }}
+                </mat-chip>
+              }
+              @case ('boolean') {
+                <mat-chip [color]="row[col.field] ? 'primary' : 'warn'" selected>
+                  {{ row[col.field] ? 'Attivo' : 'Disattivo' }}
+                </mat-chip>
+              }
+              @case ('date') {
+                {{ row[col.field] | date:'short' }}
+              }
+              @case ('currency') {
+                {{ (row[col.field] / (col.divisor ?? 1)) | currency:'EUR':'symbol':'1.2-2' }}
+              }
+              @default {
+                {{ getCellValue(row, col.field) }}
+              }
+            }
+          </td>
+        </ng-container>
+      }
+
+      <!-- Actions column — projected by smart component -->
+      @if (actionsTemplateRef) {
+        <ng-container [matColumnDef]="actionsColumnDef" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef> Azioni </th>
+          <td mat-cell *matCellDef="let row">
+            <ng-container *ngTemplateOutlet="actionsTemplateRef; context: { $implicit: row }"></ng-container>
+          </td>
+        </ng-container>
+      }
+
+      <tr mat-header-row *matHeaderRowDef="allDisplayedColumns(); sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: allDisplayedColumns();"></tr>
+
+      <!-- Empty state -->
+      @if (!loading && !error && data.length === 0) {
+        <tr class="mat-row">
+          <td class="mat-cell empty-cell" [attr.colspan]="allDisplayedColumns().length">
+            <mat-icon>inbox</mat-icon>
+            <span>Nessun dato trovato</span>
+          </td>
+        </tr>
+      }
+    </table>
+  </div>
+
+  <!-- Paginator -->
+  <mat-paginator
+    [length]="totalItems"
+    [pageSize]="defaultPageSize()"
+    [pageSizeOptions]="pageSizeOptions()"
+    [hidePageSize]="config.hidePageSize ?? false"
+    [showFirstLastButtons]="config.showFirstLastButtons ?? true"
+    (page)="onPageChange($event)"
+    aria-label="Seleziona pagina">
+  </mat-paginator>
+</div>

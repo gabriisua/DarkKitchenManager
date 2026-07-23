@@ -1,0 +1,138 @@
+<div class="page-container">
+  <div class="header-section">
+    <h2>Nuovo Ordine Interno</h2>
+    <p>Compila i dati per generare un nuovo ordine fuori dal portale B2B.</p>
+  </div>
+
+  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="form-grid">
+
+    <div class="form-column">
+      <h3>Dati di Spedizione</h3>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Cerca Cliente</mat-label>
+        <input
+          type="text"
+          matInput
+          formControlName="searchCustomer"
+          [matAutocomplete]="autoCustomer"
+          placeholder="Digita la ragione sociale..."
+        >
+        <mat-icon matSuffix>search</mat-icon>
+        <mat-autocomplete
+          #autoCustomer="matAutocomplete"
+          [displayWith]="displayCustomerName"
+          (optionSelected)="onCustomerSelected($event)"
+        >
+          <mat-option *ngFor="let customer of filteredCustomers$ | async" [value]="customer">
+            {{ customer.businessName }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="orderForm.get('customerId')?.invalid && orderForm.get('searchCustomer')?.touched">
+          Seleziona un cliente dalla lista.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Hub di Consegna</mat-label>
+        <mat-select formControlName="deliveryHubId">
+          <mat-option *ngFor="let hub of hubs()" [value]="hub.id">
+            {{ hub.name }}
+          </mat-option>
+        </mat-select>
+        <mat-hint *ngIf="orderForm.get('deliveryHubId')?.disabled">
+          Seleziona prima un cliente
+        </mat-hint>
+        <mat-error>Campo obbligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Data Consegna Richiesta</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="requestedDeliveryDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Riferimento Cliente (Es. PO-12345)</mat-label>
+        <input matInput formControlName="customerReference" placeholder="Opzionale">
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Note per il corriere</mat-label>
+        <textarea matInput formControlName="deliveryNotes" rows="2" placeholder="Es. Suonare il campanello rosso"></textarea>
+      </mat-form-field>
+
+      <div class="toggle-container">
+        <mat-slide-toggle formControlName="bypassCalculator" color="primary">
+          Forza Data di Consegna (Bypass Calcolatore Logistico)
+        </mat-slide-toggle>
+      </div>
+    </div>
+
+    <div class="form-column">
+      <div class="items-header">
+        <h3>Piatti Ordinati</h3>
+        <button type="button" mat-stroked-button color="primary" (click)="addItem()">
+          <mat-icon>add</mat-icon> Aggiungi Piatto
+        </button>
+      </div>
+
+      <div formArrayName="items" class="items-list">
+        <div
+          *ngFor="let item of itemsFormArray.controls; let i=index"
+          [formGroupName]="i"
+          class="item-row"
+        >
+          <mat-form-field appearance="outline" class="plate-select">
+            <mat-label>Cerca Piatto</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="searchPlate"
+              [matAutocomplete]="autoPlate"
+              placeholder="Digita il nome del piatto..."
+            >
+            <mat-autocomplete
+              #autoPlate="matAutocomplete"
+              [displayWith]="displayPlateName"
+              (optionSelected)="onPlateSelected($event, i)"
+            >
+              <mat-option *ngFor="let plate of filteredPlatesByRow[i] | async" [value]="plate">
+                {{ plate.name }}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="item.get('plateId')?.invalid && item.get('searchPlate')?.touched">
+              Seleziona un piatto valido.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="qty-input">
+            <mat-label>Q.tà</mat-label>
+            <input matInput type="number" formControlName="quantity" min="1">
+          </mat-form-field>
+
+          <button
+            type="button"
+            mat-icon-button
+            color="warn"
+            matTooltip="Rimuovi"
+            (click)="removeItem(i)"
+            [disabled]="itemsFormArray.length === 1"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+
+  <mat-divider class="footer-divider"></mat-divider>
+
+  <div class="actions-footer">
+    <button mat-button (click)="cancel()">Annulla</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()">
+      <mat-icon>save</mat-icon> Crea Ordine
+    </button>
+  </div>
+</div>

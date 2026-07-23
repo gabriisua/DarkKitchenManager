@@ -1,0 +1,210 @@
+.loading-overlay {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #fff3f3;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.error-icon {
+  color: #d32f2f;
+}
+
+.error-text {
+  flex: 1;
+  color: #d32f2f;
+}
+
+.expand-toggle {
+  cursor: pointer;
+  text-align: left;
+  font-weight: 500;
+}
+
+.detail-row.expanded {
+  background-color: #fafafa;
+}
+
+.detail-expanded-row {
+  background-color: #f5f5f5;
+}
+
+.detail-expanded-row td {
+  padding: 0 !important;
+}
+
+.detail-container {
+  padding: 16px 24px 16px 72px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.detail-header-title {
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.detail-orders-table {
+  border-collapse: collapse;
+}
+
+.detail-orders-table th {
+  font-size: 13px;
+  color: #666;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 600;
+}
+
+.detail-orders-table td {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.no-orders {
+  color: #999;
+  font-style: italic;
+}
+
+.empty-cell {
+  text-align: center;
+  padding: 48px 16px;
+  color: #999;
+}
+
+.empty-cell mat-icon {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.col-select {
+  width: 48px;
+}
+
+.inline-flex-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-icon-small {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.detail-expanded-td {
+  padding: 0;
+  border: none;
+}
+
+.detail-loading-row {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.detail-content {
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.invoice-status-error {
+  color: #f44336;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.invoice-status-ready {
+  color: #4caf50;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.icon-16 {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.icon-18 {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.detail-order-row {
+  border-top: 1px solid #eee;
+}
+
+.invoice-error-row {
+  background-color: #ffebee;
+}
+
+.invoice-error-cell {
+  padding: 8px 16px;
+  color: #d32f2f;
+  font-size: 12px;
+}
+
+.detail-pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  font-size: 13px;
+}
+
+.page-info {
+  color: #666;
+}
+
+.empty-icon-large {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  color: #ccc;
+}
+
+.empty-text {
+  margin-top: 16px;
+  color: #666;
+}
+
+.text-left {
+  padding: 8px;
+  text-align: left;
+}
+
+.text-right {
+  padding: 8px;
+  text-align: right;
+}
+
+.detail-orders-table thead {
+  background: #f1f1f1;
+}
+
+.detail-orders-table thead tr {
+  border-top: 1px solid #eee;
+}
+
+.detail-orders-table {
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}

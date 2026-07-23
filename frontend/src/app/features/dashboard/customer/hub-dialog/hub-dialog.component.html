@@ -1,0 +1,76 @@
+<h2 mat-dialog-title>
+  {{ isEditMode ? 'Modifica Sede Logistica' : 'Nuova Sede Logistica' }}
+</h2>
+
+<mat-dialog-content>
+  <div *ngIf="serverError" class="error-msg">
+    {{ serverError }}
+  </div>
+
+  <form [formGroup]="hubForm" class="dialog-grid-form">
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nome Sede (Es. Magazzino Nord)</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Indirizzo di Consegna</mat-label>
+      <input matInput formControlName="shippingAddress">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Dettagli Indirizzo (Es. Scala B)</mat-label>
+      <input matInput formControlName="addressSuffix">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Città</mat-label>
+      <input matInput formControlName="city">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>CAP</mat-label>
+      <input matInput formControlName="zipCode">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Provincia (Sigla)</mat-label>
+      <input matInput formControlName="province">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Telefono Referente Sede</mat-label>
+      <input matInput formControlName="contactPhone">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Orario Apertura</mat-label>
+      <input matInput type="time" formControlName="deliveryOpenTime">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Orario Chiusura</mat-label>
+      <input matInput type="time" formControlName="deliveryCloseTime">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Note per il Corriere</mat-label>
+      <textarea matInput formControlName="deliveryNotes" rows="2"></textarea>
+    </mat-form-field>
+
+    <div class="checkbox-container">
+      <mat-checkbox formControlName="isDefault" color="primary">
+        Imposta come Sede Predefinita
+      </mat-checkbox>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annulla</button>
+  <button mat-raised-button color="primary" [disabled]="hubForm.invalid" (click)="save()">
+    Salva Sede
+  </button>
+</mat-dialog-actions>

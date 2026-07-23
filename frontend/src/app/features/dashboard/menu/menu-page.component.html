@@ -1,0 +1,99 @@
+<div class="page-container">
+    <div class="page-header">
+      <h1 class="mat-headline-4" >Gestione Menu</h1>
+    </div>
+
+  <app-data-grid
+    [columns]="columns"
+    [data]="data()"
+    [totalItems]="totalItems()"
+    [loading]="loading()"
+    [error]="error()"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+    (retry)="refreshTable()"
+  >
+
+    <div gridSearch class="toolbar-row">
+
+      <mat-form-field appearance="outline" class="toolbar-field search-field">
+        <mat-label>Cerca menu...</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearch($event)"
+          placeholder="Nome menu...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="toolbar-field">
+        <mat-label>Stato</mat-label>
+        <mat-select
+          [(value)]="filters.isActive"
+          (valueChange)="onFilterChange()">
+          <mat-option [value]="null">Tutti</mat-option>
+          <mat-option [value]="true">Attivo</mat-option>
+          <mat-option [value]="false">Inattivo</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-stroked-button
+        class="toolbar-field"
+        (click)="resetFilters()"
+        matTooltip="Resetta tutti i filtri"
+        [disabled]="!searchTerm && !filters.name && filters.isActive === null">
+        <mat-icon>clear_all</mat-icon>
+        Reset
+      </button>
+
+      <div class="spacer"></div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="toolbar-cta"
+        (click)="addMenu()">
+        <mat-icon>add</mat-icon>
+        Nuovo Menu
+      </button>
+
+    </div>
+
+    <ng-template
+      #actionsTemplate
+      let-row>
+
+      <div class="action-buttons-container">
+
+        <button
+          mat-icon-button
+          color="primary"
+          matTooltip="Dettaglio Menu"
+          (click)="viewMenuDetails(row)">
+          <mat-icon>visibility</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          color="primary"
+          matTooltip="Modifica"
+          (click)="editMenu(row)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          color="warn"
+          matTooltip="Elimina"
+          (click)="deleteMenu(row)">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+      </div>
+
+    </ng-template>
+
+  </app-data-grid>
+
+</div>

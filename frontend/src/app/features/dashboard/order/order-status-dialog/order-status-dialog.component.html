@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Cambia Stato Ordine</h2>
+
+<mat-dialog-content>
+  <p class="current-status">
+    Stato attuale: <strong>{{ getStatusLabel(data.currentStatus) }}</strong>
+  </p>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Nuovo Stato</mat-label>
+    <mat-select [(value)]="selectedStatus">
+      <mat-option *ngFor="let opt of statusOptions" [value]="opt.value">
+        {{ opt.label }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Annulla</button>
+  <button mat-raised-button color="primary" [disabled]="selectedStatus() === data.currentStatus" (click)="onSave()">
+    Salva
+  </button>
+</mat-dialog-actions>

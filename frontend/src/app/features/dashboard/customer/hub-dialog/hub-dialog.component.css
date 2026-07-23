@@ -1,0 +1,36 @@
+.error-msg {
+  color: #f44336;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.dialog-grid-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 10px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.checkbox-container {
+  grid-column: span 2;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+/* Responsività: su schermi piccoli (es. smartphone), passa a una colonna singola */
+@media (max-width: 600px) {
+  .dialog-grid-form {
+    grid-template-columns: 1fr;
+  }
+  .full-width, .checkbox-container {
+    grid-column: span 1;
+  }
+}

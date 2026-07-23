@@ -1,0 +1,50 @@
+<header class="navbar mat-elevation-z2">
+
+  <div class="left">
+    <button mat-icon-button (click)="toggleSidebar.emit()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <img src="assets/cap.png" alt="Roscoff Logo" class="logo-placeholder">
+    <span class="title">Pannello di gestione</span>
+  </div>
+
+  <div class="right">
+
+    <button
+      mat-button
+      class="user-btn"
+      [matMenuTriggerFor]="menu"
+    >
+      <div class="user-avatar">
+        {{ (currentUser())?.name?.charAt(0) || 'U' }}
+      </div>
+
+      <div class="user-info">
+        <span class="user-name">
+          {{ (currentUser())?.name || 'Profilo' }}
+        </span>
+        <span class="user-email">
+          {{ (currentUser())?.email || '' }}
+        </span>
+      </div>
+
+      <mat-icon class="arrow-icon">expand_more</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu" xPosition="before" class="modern-profile-menu">
+
+      <button mat-menu-item>
+        <mat-icon>person</mat-icon>
+        <span>Il mio Profilo</span>
+      </button>
+
+      <button mat-menu-item class="logout-item" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Disconnetti</span>
+      </button>
+
+    </mat-menu>
+
+  </div>
+
+</header>

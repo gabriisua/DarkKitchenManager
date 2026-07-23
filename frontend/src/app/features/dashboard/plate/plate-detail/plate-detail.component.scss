@@ -1,0 +1,258 @@
+.page-container {
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.category-badge {
+  background-color: var(--gold-primary-light);
+  color: var(--gold-primary-hover);
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--gold-primary-lightest);
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  color: #666;
+  gap: 16px;
+}
+
+.detail-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @media (min-width: 992px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.left-col {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.right-col {
+  flex: 0 0 380px;
+  width: 100%;
+}
+
+.custom-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: none !important;
+
+  mat-card-header {
+    padding: 16px 24px 0 24px;
+    margin-bottom: 16px;
+  }
+
+  mat-card-title {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  mat-card-content {
+    padding: 0 24px 24px 24px;
+  }
+}
+
+.mt-16 { margin-top: 16px; }
+
+.description-text {
+  color: #444;
+  line-height: 1.5;
+  font-size: 15px;
+  margin: 0;
+}
+
+.price-grid {
+  display: flex;
+  gap: 32px;
+}
+
+.price-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-label {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.price-value {
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+}
+
+.ingredient-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ingredient-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .ing-name { font-weight: 500; color: #333; }
+  .ing-weight { color: #666; font-family: monospace; font-size: 15px; }
+}
+
+.empty-state {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  padding: 16px;
+}
+
+.analytics-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px 8px 24px !important;
+}
+
+.header-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon { color: white; }
+
+  &.gold-bg { background-color: var(--gold-primary); }
+  &.green-bg { background-color: #4caf50; }
+}
+
+.food-cost-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  background: #fdfbf7;
+  border: 1px dashed var(--gold-primary);
+  border-radius: 8px;
+
+  .fc-amount { font-size: 32px; font-weight: 700; color: #000; }
+  .fc-subtitle { font-size: 13px; color: #666; margin-top: 4px; }
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 14px;
+
+  &.highlight-row { font-weight: 600; font-size: 15px; color: #000; }
+  &.sub-row { padding-left: 16px; color: #666; font-size: 13px; }
+
+  .stat-value { font-weight: 500; font-family: monospace; font-size: 14px; }
+}
+
+.allergens-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 2px dashed #f0f0f0;
+
+  .allergens-title {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #d32f2f;
+  }
+
+  .allergen-chip {
+    background-color: #ffebee !important;
+    color: #c62828 !important;
+    font-weight: 500;
+  }
+}
+
+.analytics-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #666;
+  font-size: 14px;
+  padding: 12px 0;
+}
+
+.inline-flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.gap-16 {
+  gap: 16px;
+}
+
+.divider-spacing {
+  margin: 16px 0;
+}
+
+.ingredient-row-alt {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.ing-details-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.ing-name-bold {
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+.ing-sub-text {
+  font-size: 12px;
+  margin-left: 15px;
+  color: #777;
+  margin-top: 2px;
+}
+
+.ing-weight-right {
+  white-space: nowrap;
+  margin-right: 10px;
+  font-weight: 500;
+  color: #333;
+}
+
+.instructions-value {
+  text-align: right;
+  max-width: 60%;
+}

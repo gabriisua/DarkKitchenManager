@@ -1,0 +1,68 @@
+<div class="login-wrap">
+  <mat-card class="auth-card">
+
+    <div class="brand">
+      <img src="assets/logo.roscoff.png" alt="Roscoff Logo" class="logo-placeholder" >
+    </div>
+
+    <p class="subtitle mb-16">Back Office Roscoff Meal</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email">
+
+        @if (form.get('email')?.hasError('required')) {
+          <mat-error>Email obbligatoria</mat-error>
+        }
+        @if (form.get('email')?.hasError('email')) {
+          <mat-error>Inserisci una email valida</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+
+        @if (form.get('password')?.hasError('required')) {
+          <mat-error>Password obbligatoria</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="row actions">
+        <mat-checkbox formControlName="remember">
+          Ricorda utenza
+        </mat-checkbox>
+
+        <a mat-button color="primary" routerLink="/forgot-password">
+          Password dimenticata?
+        </a>
+      </div>
+
+      <button
+        mat-flat-button
+        class="full-width login-btn gold-btn"
+        type="submit"
+        [disabled]="form.invalid || isSubmitting">
+
+        @if (isSubmitting) {
+          <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+        } @else {
+          <span>Login</span>
+        }
+
+      </button>
+
+      @if (serverError) {
+        <mat-error class="server-err">{{ serverError }}</mat-error>
+      }
+
+    </form>
+
+  </mat-card>
+</div>

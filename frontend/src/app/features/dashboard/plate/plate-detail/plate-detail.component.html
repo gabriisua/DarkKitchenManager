@@ -1,0 +1,301 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="inline-flex-center gap-16">
+      <button mat-icon-button routerLink="/plates" matTooltip="Torna alla lista">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <h2>
+        @if (plate()?.code) {
+          <span style="color: #777; margin-right: 8px;">[{{ plate()?.code }}]</span>
+        }
+        {{ plate()?.name || 'Caricamento Piatto...' }}
+      </h2>
+
+      @if (plate()?.categoryName) {
+        <span class="category-badge">{{ plate()?.categoryName }}</span>
+      }
+
+      @if (plate()?.lineType !== undefined && plate()?.lineType !== 0) {
+        <span class="category-badge" style="background: #111; color: #fff;">
+          Linea: {{ getLineTypeName(plate()?.lineType) }}
+        </span>
+      }
+
+      @if (plate()?.dietaryIcon && plate()?.dietaryIcon !== 0) {
+        <span class="category-badge" style="background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb;">
+          <mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;">restaurant</mat-icon>
+          {{ getDietaryIconName(plate()?.dietaryIcon) }}
+        </span>
+      }
+
+      @if (plate()?.isWowPlate) {
+        <span class="category-badge" style="background: #fff8e1; color: #ff8f00; border: 1px solid #ffecb3;">
+          <mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;">star</mat-icon>
+          WOW
+        </span>
+      }
+
+      @if (plate()?.isXlPlate) {
+        <span class="category-badge" style="background: #fce4ec; color: #c2185b; border: 1px solid #f8bbd0;">
+          XL
+        </span>
+      }
+
+    </div>
+
+    <div class="inline-flex-center gap-16">
+      <button mat-stroked-button *ngIf="plate()" (click)="downloadTechnicalSheet()" matTooltip="Scarica PDF per i clienti">
+        <mat-icon>picture_as_pdf</mat-icon>
+        Scheda Tecnica
+      </button>
+
+      <button mat-flat-button class="gold-btn" *ngIf="plate()" (click)="editPlate()">
+        <mat-icon>edit</mat-icon>
+        Modifica Piatto
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Recupero informazioni del piatto in corso...</p>
+    </div>
+  }
+
+  @if (!loading() && plate()) {
+    <div class="detail-layout">
+
+      <div class="left-col">
+
+        <mat-card class="custom-card">
+          <mat-card-header>
+            <mat-card-title>Informazioni Generali</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="description-text">
+              {{ plate()?.description || 'Nessuna descrizione o nota inserita per questo piatto.' }}
+            </p>
+
+            <mat-divider class="divider-spacing"></mat-divider>
+
+            <div class="price-grid">
+              <div class="price-box">
+                <span class="price-label">Prezzo Base</span>
+                <span class="price-value">{{ getFormattedBasePrice() | currency:'EUR':'symbol' }}</span>
+              </div>
+              <div class="price-box">
+                <span class="price-label">Packaging</span>
+                <span class="price-value">{{ getFormattedPackagingCost() | currency:'EUR':'symbol' }}</span>
+              </div>
+              <div class="price-box">
+                <span class="price-label">Aliquota IVA</span>
+                <span class="price-value">{{ plate()?.vatRate | number:'1.0-2' }}%</span>
+              </div>
+            </div>
+
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="custom-card mt-16">
+          <mat-card-header>
+            <mat-card-title>Dati di Preparazione ed Etichetta</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stat-row highlight-row">
+              <span>Codice a Barre (EAN)</span>
+              <span class="stat-value">{{ plate()?.eanCode || 'Non impostato' }}</span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="stat-row">
+              <span>Rinvenimento Microonde</span>
+              <span class="stat-value">
+                @if (plate()?.microwaveWattage && plate()?.microwaveMinutes) {
+                  {{ plate()?.microwaveWattage }} W per {{ plate()?.microwaveMinutes }} min
+                } @else {
+                  Non previsto
+                }
+              </span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="stat-row">
+              <span>Altre Istruzioni (Es. Forno)</span>
+              <span class="stat-value instructions-value">
+                {{ plate()?.preparationInstructions || 'Nessuna istruzione aggiuntiva' }}
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="custom-card mt-16">
+          <mat-card-header>
+            <mat-card-title>Dati Logistici e Scheda Tecnica</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stat-row">
+              <span>Tipologia Prodotto</span>
+              <span class="stat-value">{{ plate()?.productType || 'Non specificata' }}</span>
+            </div>
+            <mat-divider></mat-divider>
+
+            <div class="stat-row">
+              <span>Shelf Life (Scadenza)</span>
+              <span class="stat-value" style="color: #D4A20A; font-weight: 600;">
+                {{ plate()?.daysToExpire }} Giorni
+              </span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="stat-row">
+              <span>Tecn. Confezionamento</span>
+              <span class="stat-value">{{ plate()?.preservationTechnology || 'Non specificata' }}</span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="stat-row">
+              <span>Conservazione</span>
+              <span class="stat-value instructions-value">
+                {{ plate()?.storageConditions || 'Non specificata' }}
+              </span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="stat-row">
+              <span>Specifiche Imballo</span>
+              <span class="stat-value instructions-value">
+                {{ plate()?.packagingDescription || 'Nessuna specifica inserita' }}
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="custom-card mt-16">
+          <mat-card-header>
+            <mat-card-title>Distinta Base (Ingredienti)</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @if (plate()?.ingredients?.length) {
+              <div class="ingredient-list">
+                @for (ing of plate()?.ingredients; track ing.ingredientId) {
+                  <div class="ingredient-row-alt">
+                    <div class="ing-details-col">
+                      <span class="ing-name-bold">{{ ing.ingredientName }}</span>
+
+                      @if (ing.subIngredients) {
+                        <span class="ing-sub-text">
+                          ({{ ing.subIngredients }})
+                        </span>
+                      }
+                    </div>
+                    <span class="ing-weight-right">{{ ing.weightInGrams }} g</span>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="empty-state">Nessun ingrediente associato a questo piatto.</p>
+            }
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+      <div class="right-col">
+
+        <mat-card class="custom-card">
+          <mat-card-header class="analytics-header">
+            <div class="header-icon-wrapper gold-bg">
+              <mat-icon>payments</mat-icon>
+            </div>
+            <mat-card-title>Food Cost Reale</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @if (foodCost()) {
+              <div class="food-cost-display">
+                <span class="fc-amount">{{ foodCost()?.formattedDisplay }}</span>
+                <span class="fc-subtitle">Costo netto materie prime</span>
+              </div>
+            } @else {
+              <div class="analytics-loading">
+                <mat-spinner diameter="20"></mat-spinner> Calcolo in corso...
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="custom-card mt-16">
+          <mat-card-header class="analytics-header">
+            <div class="header-icon-wrapper green-bg">
+              <mat-icon>monitor_heart</mat-icon>
+            </div>
+            <mat-card-title>Valori Nutrizionali</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @if (nutrition()) {
+              <div class="stat-row highlight-row">
+                <span>Peso Totale Piatto</span>
+                <span class="stat-value">{{ nutrition()?.totalWeightGrams | number:'1.0-0' }} g</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="stat-row">
+                <span>Energia</span>
+                <span class="stat-value">{{ nutrition()?.energyKcal | number:'1.0-1' }} Kcal</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="stat-row">
+                <span>Grassi</span>
+                <span class="stat-value">{{ nutrition()?.fats | number:'1.1-2' }} g</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="stat-row sub-row">
+                <span>di cui Saturi</span>
+                <span class="stat-value">{{ nutrition()?.saturatedFats | number:'1.1-2' }} g</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="stat-row">
+                <span>Carboidrati</span>
+                <span class="stat-value">{{ nutrition()?.carbohydrates | number:'1.1-2' }} g</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="stat-row sub-row">
+                <span>di cui Zuccheri</span>
+                <span class="stat-value">{{ nutrition()?.sugars | number:'1.1-2' }} g</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="stat-row">
+                <span>Fibre</span>
+                <span class="stat-value">{{ nutrition()?.fibers | number:'1.1-2' }} g</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="stat-row">
+                <span>Proteine</span>
+                <span class="stat-value">{{ nutrition()?.proteins | number:'1.1-2' }} g</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="stat-row">
+                <span>Sale</span>
+                <span class="stat-value">{{ nutrition()?.salt | number:'1.2-2' }} g</span>
+              </div>
+
+              @if (nutrition()?.allergens?.length) {
+                <div class="allergens-section">
+                  <p class="allergens-title">Allergeni Presenti:</p>
+                  <mat-chip-set>
+                    @for (allergen of nutrition()?.allergens; track allergen.id) {
+                      <mat-chip class="allergen-chip" color="warn" highlighted>
+                        {{ allergen.name }}
+                      </mat-chip>
+                    }
+                  </mat-chip-set>
+                </div>
+              }
+            } @else {
+              <div class="analytics-loading">
+                <mat-spinner diameter="20"></mat-spinner> Analisi nutrizionale...
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+  }
+</div>

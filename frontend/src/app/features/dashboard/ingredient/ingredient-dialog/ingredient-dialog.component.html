@@ -1,0 +1,123 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Modifica Ingrediente' : 'Nuovo Ingrediente' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+
+    <div class="form-section">
+      <h3>Informazioni Generali</h3>
+      <div class="grid-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Nome Ingrediente</mat-label>
+          <input matInput formControlName="name">
+          <mat-error *ngIf="form.get('name')?.hasError('required')">Il nome è obbligatorio</mat-error>
+          <mat-error *ngIf="form.get('name')?.hasError('maxlength')">Massimo 150 caratteri</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Sotto-ingredienti / Composizione</mat-label>
+          <textarea matInput formControlName="subIngredients" rows="3" placeholder="Es. carne di suino, sale, destrosio, antiossidante E301..."></textarea>
+          <mat-hint>Lascia vuoto se è un ingrediente semplice (es. sale, farina).</mat-hint>
+          <mat-error *ngIf="form.get('subIngredients')?.hasError('maxlength')">Massimo 1000 caratteri</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="form-section">
+      <h3>Costi e Resa</h3>
+      <div class="grid-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Costo al Kg (€)</mat-label>
+          <input matInput type="number" step="0.01" formControlName="costPer1000g" placeholder="0.00">
+          <span matTextSuffix>€/kg</span>
+          <mat-error *ngIf="form.get('costPer1000g')?.hasError('required')">Il costo è obbligatorio</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Resa (%)</mat-label>
+          <input matInput type="number" step="0.01" formControlName="yieldPercentage" placeholder="100">
+          <span matTextSuffix>%</span>
+          <mat-error *ngIf="form.get('yieldPercentage')?.hasError('required')">La resa è obbligatoria</mat-error>
+          <mat-error *ngIf="form.get('yieldPercentage')?.hasError('max')">Massimo 100%</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="form-section">
+      <h3>Valori Nutrizionali (per 100g)</h3>
+      <div class="grid-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Energia (Kcal)</mat-label>
+          <input matInput type="number" step="0.1" formControlName="energyKcalPer100g">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Energia (Kj)</mat-label>
+          <input matInput type="number" step="0.1" formControlName="energyKjPer100g">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Grassi (g)</mat-label>
+          <input matInput type="number" step="0.1" formControlName="fatsPer100g">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>di cui Saturi (g)</mat-label>
+          <input matInput type="number" step="0.1" formControlName="saturatedFatsPer100g">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Carboidrati (g)</mat-label>
+          <input matInput type="number" step="0.1" formControlName="carbohydratesPer100g">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>di cui Zuccheri (g)</mat-label>
+          <input matInput type="number" step="0.1" formControlName="sugarsPer100g">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Fibre (g)</mat-label>
+          <input matInput type="number" step="0.1" formControlName="fibersPer100g">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Proteine (g)</mat-label>
+          <input matInput type="number" step="0.1" formControlName="proteinsPer100g">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Sale (g)</mat-label>
+          <input matInput type="number" step="0.01" formControlName="saltPer100g">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="form-section">
+      <h3>Allergeni</h3>
+      <div class="grid-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Seleziona allergeni</mat-label>
+          <mat-select formControlName="allergenIds" multiple>
+            <mat-option *ngFor="let allergen of allergens()" [value]="allergen.id">
+              {{ allergen.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annulla</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()">
+    {{ isEditMode ? 'Salva Modifiche' : 'Crea Ingrediente' }}
+  </button>
+</mat-dialog-actions>

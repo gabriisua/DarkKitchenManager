@@ -1,0 +1,109 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="mat-headline-4" >Gestione Sconti Categoria/Piatti</h1>
+  </div>
+
+  <mat-tab-group animationDuration="0ms">
+
+    <mat-tab label="Prezzi Bloccati (Piatti)">
+      <app-data-grid
+        [columns]="plateColumns"
+        [data]="plateData()"
+        [totalItems]="plateTotal()"
+        [loading]="plateLoading()"
+        (sortChange)="onPlateSortChange($event)"
+        (pageChange)="onPlatePageChange($event)"
+        (retry)="plateQuery.next(plateQuery.value)"
+      >
+        <div gridSearch class="toolbar-row">
+          <mat-form-field appearance="outline" class="toolbar-field search-field">
+            <mat-label>Cerca cliente o piatto...</mat-label>
+            <input matInput [(ngModel)]="plateSearchTerm" (ngModelChange)="onPlateSearch($event)" placeholder="Digita...">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Stato</mat-label>
+            <mat-select [(value)]="plateIsActiveFilter" (valueChange)="onPlateFilterChange()">
+              <mat-option [value]="null">Tutti</mat-option>
+              <mat-option [value]="true">Attivi (in corso)</mat-option>
+              <mat-option [value]="false">Scaduti</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="spacer"></div>
+
+          <button mat-raised-button color="primary" (click)="openPlateDiscountModal()">
+            <mat-icon>add</mat-icon> Nuovo Prezzo Piatto
+          </button>
+        </div>
+
+        <ng-template #priceTemplate let-row>
+          {{ (row.overridePrice / 100) | currency:'EUR' }}
+        </ng-template>
+
+        <ng-template #actionsTemplate let-row>
+          <div class="action-buttons-container">
+            <button mat-icon-button color="primary" matTooltip="Modifica" (click)="openPlateDiscountModal(row)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" matTooltip="Elimina" (click)="deletePlateDiscount(row)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-template>
+      </app-data-grid>
+    </mat-tab>
+
+    <mat-tab label="Sconti Categoria">
+      <app-data-grid
+        [columns]="categoryColumns"
+        [data]="categoryData()"
+        [totalItems]="categoryTotal()"
+        [loading]="categoryLoading()"
+        (sortChange)="onCategorySortChange($event)"
+        (pageChange)="onCategoryPageChange($event)"
+        (retry)="categoryQuery.next(categoryQuery.value)"
+      >
+        <div gridSearch class="toolbar-row">
+          <mat-form-field appearance="outline" class="toolbar-field search-field">
+            <mat-label>Cerca cliente o categoria...</mat-label>
+            <input matInput [(ngModel)]="categorySearchTerm" (ngModelChange)="onCategorySearch($event)" placeholder="Digita...">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Stato</mat-label>
+            <mat-select [(value)]="categoryIsActiveFilter" (valueChange)="onCategoryFilterChange()">
+              <mat-option [value]="null">Tutti</mat-option>
+              <mat-option [value]="true">Attivi (in corso)</mat-option>
+              <mat-option [value]="false">Scaduti</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="spacer"></div>
+
+          <button mat-raised-button color="primary" (click)="openCategoryDiscountModal()">
+            <mat-icon>add</mat-icon> Nuovo Sconto Categoria
+          </button>
+        </div>
+
+        <ng-template #percentageTemplate let-row>
+          <span class="discount-percentage">{{ row.discountPercentage }}%</span>
+        </ng-template>
+
+        <ng-template #actionsTemplate let-row>
+          <div class="action-buttons-container">
+            <button mat-icon-button color="primary" matTooltip="Modifica" (click)="openCategoryDiscountModal(row)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" matTooltip="Elimina" (click)="deleteCategoryDiscount(row)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-template>
+      </app-data-grid>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

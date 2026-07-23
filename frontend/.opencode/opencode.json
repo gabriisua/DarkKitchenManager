@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "read": {
+      "/Users/gabrielesuardi/Desktop/fe-roscoff/.opencode/get-shit-done/*": "allow"
+    },
+    "external_directory": {
+      "/Users/gabrielesuardi/Desktop/fe-roscoff/.opencode/get-shit-done/*": "allow"
+    }
+  }
+}

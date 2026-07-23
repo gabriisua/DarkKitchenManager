@@ -1,0 +1,368 @@
+/* =========================================
+   VARIABILI CSS GLOBALI
+========================================= */
+:root {
+  --gold-primary: #d4a20a;
+  --gold-primary-hover: #b88909;
+  --gold-primary-light: #fff8e1;
+  --gold-primary-lightest: rgba(212, 162, 10, 0.15);
+  --font-primary: 'Futura Std', 'Futura', 'Trebuchet MS', sans-serif;
+  --font-accent: 'Mishaland', cursive, brush-script;
+}
+
+body {
+  color-scheme: light;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: var(--font-primary);
+  margin: 0;
+  height: 100%;
+}
+
+/* =========================================
+   CLASSI TYPOGRAPHY BRAND
+========================================= */
+.accent-title {
+  font-family: var(--font-accent);
+  color: #000000;
+  font-weight: normal;
+}
+
+/* =========================================
+   LAYOUT & UTILITIES
+========================================= */
+.page-container {
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.page-header mat-form-field {
+  margin-bottom: -1.34375em;
+}
+
+.table-container {
+  overflow-x: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.logo-placeholder {
+  max-width: 180px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.auth-card {
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 32px;
+}
+
+.full-width { width: 100%; }
+.text-center { text-align: center; }
+.mt-16 { margin-top: 16px; }
+.mb-16 { margin-bottom: 16px; }
+
+/* =========================================
+   BOTTONI E COMPONENTI MATERIAL
+========================================= */
+.mat-mdc-fab.gold-fab {
+  --mdc-fab-container-color: var(--gold-primary);
+  --mdc-fab-icon-color: #000000;
+}
+
+.gold-btn {
+  background-color: var(--gold-primary) !important;
+  color: #000000 !important;
+}
+
+.gold-btn:hover {
+  background-color: var(--gold-primary-hover) !important;
+}
+
+.mat-mdc-raised-button.mat-primary {
+  --mdc-protected-button-container-color: var(--gold-primary);
+  --mdc-protected-button-label-text-color: #000000;
+}
+
+.mat-mdc-flat-button.mat-primary {
+  --mdc-text-button-label-text-color: var(--gold-primary);
+}
+
+.mat-mdc-chip.mat-primary {
+  --mdc-chip-elevated-container-color: #ffdea3;
+  --mdc-chip-label-text-color: #000000;
+}
+
+/* Grigio chiaro ufficiale del brand (#BFBFBF) */
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+  border-color: #bfbfbf;
+}
+
+.mat-mdc-table .mdc-data-table__header-row {
+  background-color: #fafafa;
+}
+
+.mat-mdc-paginator,
+table.mat-mdc-table {
+  background: #ffffff;
+}
+
+dialog {
+  background-color: #ffffff !important;
+}
+
+.mdc-dialog__surface,
+.mat-mdc-dialog-container .mdc-dialog__surface,
+.mat-mdc-dialog-surface {
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+/* =========================================
+   MATERIAL DROPDOWN (MAT-SELECT)
+========================================= */
+.mat-mdc-select-panel {
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  padding: 8px 0 !important;
+  border: 1px solid #e0e0e0;
+}
+
+.mat-mdc-option {
+  min-height: 42px !important;
+  color: #333333 !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+  padding: 0 16px !important;
+}
+
+.mat-mdc-option .mdc-list-item__primary-text {
+  font-family: var(--font-primary) !important;
+  font-size: 14px !important;
+}
+
+.mat-mdc-option:hover:not([aria-selected="true"]):not(.mat-mdc-option-disabled) {
+  background-color: #f5f5f5 !important;
+  color: #000000 !important;
+}
+
+.mat-mdc-option[aria-selected="true"],
+.mat-mdc-option-active[aria-selected="true"] {
+  background-color: var(--gold-primary-light) !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.mat-mdc-option.mat-mdc-option-active:not([aria-selected="true"]) {
+  background-color: #fafafa !important;
+}
+
+.mat-mdc-option .mat-ripple-element {
+  background-color: var(--gold-primary-lightest) !important;
+}
+
+/* ==========================================================================
+   MATERIAL AUTOCOMPLETE DROPDOWN
+========================================================================== */
+.mat-mdc-autocomplete-panel {
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 4px 0 !important;
+  max-height: 256px !important;
+}
+
+.mat-mdc-autocomplete-panel .mat-mdc-option {
+  background-color: #ffffff;
+  transition: background-color 0.15s ease !important;
+}
+
+.mat-mdc-autocomplete-panel .mat-mdc-option:hover:not(.mat-mdc-option-disabled) {
+  background-color: #f5f5f5 !important;
+}
+
+.mat-mdc-autocomplete-panel .mat-mdc-option.mat-mdc-option-active {
+  background-color: var(--gold-primary-light) !important;
+}
+
+/* ==========================================================================
+   MATERIAL DATEPICKER (CALENDARIO)
+========================================================================== */
+.mat-datepicker-content,
+.mat-mdc-datepicker-content-container,
+mat-datepicker-content {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid #e0e0e0 !important;
+  display: block !important;
+}
+
+mat-calendar,
+.mat-calendar {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  font-family: var(--font-primary);
+}
+
+.cdk-overlay-container,
+.cdk-global-overlay-wrapper {
+  z-index: 10000 !important;
+}
+
+.mat-calendar-header {
+  padding: 8px 8px 0 8px !important;
+  background-color: #ffffff !important;
+}
+
+.mat-calendar-body-selected {
+  background-color: var(--gold-primary) !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  border-color: var(--gold-primary) !important;
+  border-width: 2px !important;
+  background-color: transparent !important;
+}
+
+.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+  background-color: var(--gold-primary-light) !important;
+  color: #000000 !important;
+}
+
+.mat-calendar-body-cell-content.mat-focus-indicator::before {
+  background-color: rgba(212, 162, 10, 0.1) !important;
+}
+
+/* ==========================================================================
+   SHARED TOOLBAR PATTERNS
+========================================================================== */
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.search-field {
+  min-width: 280px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.toolbar-cta {
+  height: 48px;
+}
+
+.action-buttons-container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.range-pair {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.range-pair mat-form-field {
+  width: 120px;
+}
+
+@media (max-width: 768px) {
+  .toolbar-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .spacer {
+    display: none;
+  }
+  .toolbar-field {
+    margin-bottom: 0;
+  }
+}
+/* ==========================================================================
+   MATERIAL MENU (mat-menu)
+   Used by: MenuDetailComponent Print CTAs (single + batch)
+   Note: mat-menu renders outside component view encapsulation → global styles
+   ========================================================================== */
+
+.mat-mdc-menu-panel {
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 4px 0 !important;
+  min-width: 200px !important;
+}
+
+.mat-mdc-menu-item {
+  min-height: 40px !important;
+  padding: 0 16px !important;
+  font-family: var(--font-primary);
+  font-size: 14px !important;
+  color: #333333 !important;
+  transition: background-color 0.15s ease !important;
+  gap: 12px;                     /* Space between icon and text */
+}
+
+.mat-mdc-menu-item .mat-icon {
+  margin-right: 0;               /* Remove default margin — gap handles spacing */
+  color: var(--gold-primary);
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+}
+
+.mat-mdc-menu-item .mat-icon + span {
+  line-height: normal;           /* Ensure text baseline aligns with icon */
+}
+
+.mat-mdc-menu-item:hover:not([disabled]) {
+  background-color: #f5f5f5 !important;
+}
+
+.mat-mdc-menu-item:active {
+  background-color: var(--gold-primary-lightest) !important;
+}
+
+/* 1. Creiamo un font fittizio che contiene SOLO il simbolo dell'Euro pulito */
+@font-face {
+  font-family: 'EuroFix';
+  src: local('system-ui'), local('-apple-system'), local('BlinkMacSystemFont'), local('Arial');
+  unicode-range: U+20AC; /* Questo è il codice univoco del simbolo € */
+}
+
+/* 2. Aggiorniamo le tue variabili nel :root mettendo 'EuroFix' come primissimo della lista */
+:root {
+  --gold-primary: #d4a20a;
+  --gold-primary-hover: #b88909;
+  --gold-primary-light: #fff8e1;
+  --gold-primary-lightest: rgba(212, 162, 10, 0.15);
+
+  /* ---> MODIFICATO QUI: Inserito 'EuroFix' all'inizio <--- */
+  --font-primary: 'EuroFix', 'Futura Std', 'Futura', 'Trebuchet MS', sans-serif;
+
+  --font-accent: 'Mishaland', cursive, brush-script;
+}

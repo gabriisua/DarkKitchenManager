@@ -1,0 +1,208 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="mat-headline-4">Fatturazione</h1>
+  </div>
+
+  <div class="toolbar-row">
+    <mat-form-field appearance="outline" class="toolbar-field search-field">
+      <mat-label>Cerca cliente...</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearch($event)" placeholder="Ragione sociale o P.IVA">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="clearFilters()" matTooltip="Resetta i filtri" [disabled]="!hasActiveFilters()">
+      <mat-icon>clear_all</mat-icon>
+      Reset
+    </button>
+
+    <div class="spacer"></div>
+
+    <button mat-raised-button color="primary" class="toolbar-cta" (click)="onGenerateBulkInvoices()" [disabled]="selectedCustomerIds().size === 0" matTooltip="Genera fatture per i clienti selezionati">
+      <mat-icon>receipt_long</mat-icon>
+      Genera Fatture Bulk
+    </button>
+
+    <button
+      mat-stroked-button
+      class="toolbar-cta"
+      (click)="navigateToHistory()"
+      matTooltip="Visualizza storico fatture">
+      <mat-icon>history</mat-icon>
+      Storico Fatture
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-overlay"><mat-spinner diameter="40"></mat-spinner></div>
+  }
+
+  @if (error(); as errMsg) {
+    <div class="error-banner">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <span class="error-text">{{ errMsg }}</span>
+      <button mat-stroked-button color="warn" (click)="refreshTable()">
+        <mat-icon>refresh</mat-icon> Riprova
+      </button>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    <div class="table-container">
+      <table mat-table [dataSource]="data()" class="full-width" multiTemplateDataRows>
+
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef class="col-select">
+            <mat-checkbox
+              [checked]="isAllSelected()"
+              [indeterminate]="selectedCustomerIds().size > 0 && !isAllSelected()"
+              (change)="toggleAllRows()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row" class="col-select">
+            <mat-checkbox
+              [checked]="selectedCustomerIds().has(row.customerId)"
+              (change)="toggleRow(row.customerId)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="businessName">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="inline-flex-center">
+              <button mat-button class="expand-toggle" (click)="toggleDetailRow(row)">
+                <mat-icon>{{ expandedCustomerId() === row.customerId ? 'expand_less' : 'expand_more' }}</mat-icon>
+                {{ row.businessName }}
+              </button>
+
+              @if (row.hasFailedInvoices) {
+                <mat-icon color="warn" matTooltip="Attenzione: alcuni tentativi di fatturazione per questo cliente sono falliti" class="error-icon-small">error</mat-icon>
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="vatNumber">
+          <th mat-header-cell *matHeaderCellDef>P.IVA</th>
+          <td mat-cell *matCellDef="let row">{{ row.vatNumber }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="ordersCount">
+          <th mat-header-cell *matHeaderCellDef>Ordini in Sospeso</th>
+          <td mat-cell *matCellDef="let row">{{ row.ordersCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="netAmountCents">
+          <th mat-header-cell *matHeaderCellDef>Netto</th>
+          <td mat-cell *matCellDef="let row">{{ row.netAmountCents / 100 | currency:'EUR':'symbol':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="vatAmountCents">
+          <th mat-header-cell *matHeaderCellDef>IVA</th>
+          <td mat-cell *matCellDef="let row">{{ row.vatAmountCents / 100 | currency:'EUR':'symbol':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalGrossCents">
+          <th mat-header-cell *matHeaderCellDef>Totale</th>
+          <td mat-cell *matCellDef="let row"><strong>{{ row.totalGrossCents / 100 | currency:'EUR':'symbol':'1.2-2' }}</strong></td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            class="detail-row"
+            [class.expanded]="expandedCustomerId() === row.customerId">
+        </tr>
+
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length" class="detail-expanded-td">
+            <div class="detail-container" [style.height]="expandedCustomerId() === row.customerId ? 'auto' : '0'" [style.visibility]="expandedCustomerId() === row.customerId ? 'visible' : 'hidden'">
+
+              @if (detailLoading() && expandedCustomerId() === row.customerId) {
+                <div class="detail-loading-row">
+                  <mat-spinner diameter="24"></mat-spinner>
+                </div>
+              } @else if (expandedCustomerId() === row.customerId) {
+                <div class="detail-content">
+                  <div class="detail-header-title">{{ row.businessName }}</div>
+
+                  @if (detailOrders().length === 0) {
+                    <span class="no-orders">Nessun ordine in sospeso.</span>
+                  } @else {
+                    <table class="detail-orders-table full-width">
+                      <thead>
+                      <tr>
+                        <th class="text-left">N. Ordine</th>
+                        <th class="text-left">Data</th>
+                        <th class="text-left">Consegna</th>
+                        <th class="text-right">Importo</th>
+                        <th class="text-left">Stato Invio</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        @for (order of pagedDetailOrders(); track order.orderId) {
+                          <tr class="detail-order-row">
+                            <td>{{ order.orderNumber }}</td>
+                            <td>{{ order.orderDate | date:'shortDate' }}</td>
+                            <td>{{ order.calculatedDeliveryDate | date:'shortDate' }}</td>
+                            <td class="text-right">{{ order.totalGrossCents / 100 | currency:'EUR':'symbol':'1.2-2' }}</td>
+                            <td>
+                              @if (order.latestErrorMessage) {
+                                <span class="invoice-status-error">
+                                  <mat-icon class="icon-16">warning</mat-icon> Fallita
+                                </span>
+                              } @else {
+                                <span class="invoice-status-ready">Pronto</span>
+                              }
+                            </td>
+                          </tr>
+                          @if (order.latestErrorMessage) {
+                            <tr class="invoice-error-row">
+                              <td colspan="5" class="invoice-error-cell">
+                                <strong>Errore FIC:</strong> {{ order.latestErrorMessage }}
+                              </td>
+                            </tr>
+                          }
+                        }
+                      </tbody>
+                    </table>
+                    @if (detailOrders().length > detailPageSize) {
+                      <div class="detail-pagination">
+                        <button mat-button [disabled]="detailPageIndex() === 0" (click)="onDetailPageChange(-1)">
+                          <mat-icon class="icon-18">chevron_left</mat-icon>
+                        </button>
+                        <span class="page-info">{{ detailPageIndex() + 1 }} / {{ detailTotalPages() }}</span>
+                        <button mat-button [disabled]="detailPageIndex() + 1 >= detailTotalPages()" (click)="onDetailPageChange(1)">
+                          <mat-icon class="icon-18">chevron_right</mat-icon>
+                        </button>
+                      </div>
+                    }
+                  }
+                </div>
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpandedRow" class="detail-expanded-row"></tr>
+
+        @if (data().length === 0) {
+          <tr class="mat-row">
+            <td class="mat-cell empty-cell" [attr.colspan]="displayedColumns.length">
+              <mat-icon class="empty-icon-large">inbox</mat-icon>
+              <div class="empty-text">Nessun dato da fatturare</div>
+            </td>
+          </tr>
+        }
+      </table>
+    </div>
+
+    <mat-paginator
+      [length]="totalItems()"
+      [pageSize]="querySubject.value.pageSize"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+      aria-label="Seleziona pagina">
+    </mat-paginator>
+
+  } </div>
