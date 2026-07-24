@@ -27,7 +27,15 @@ public static class CrioLabelGenerator
         // 1. Variabile per verificare se siamo in tedesco
         bool isDe = targetLanguage == "DE";
 
-        decimal totalWeightDecimal = customWeight ?? plate.Ingredients.Sum(i => i.WeightInGrams);
+        // --- INIZIO SCUDO ANTI-DOPPIONI INGREDIENTI ---
+        var safeIngredients = plate.Ingredients
+            .Where(i => i != null && !string.IsNullOrWhiteSpace(i.IngredientName))
+            .GroupBy(i => i.IngredientName.Trim().ToLower())
+            .Select(g => g.First())
+            .ToList();
+
+        // 2. Calcolo peso totale sicuro basato sugli ingredienti filtrati
+        decimal totalWeightDecimal = customWeight ?? safeIngredients.Sum(i => i.WeightInGrams);
         var totalWeight = totalWeightDecimal.ToString("0");
         
         var finalExpiryDate = customExpiryDate ?? productionDate.AddDays(plate.DaysToExpire);
@@ -48,10 +56,10 @@ public static class CrioLabelGenerator
             productDenomination = isDe 
                 ? "Aufgetaute gastronomische Zubereitung - Unter Schutzatmosphäre verpackt" 
                 : "Preparazione gastronomica decongelata - Confezionata in atmosfera protettiva";
-            dateLabel = isDe ? "Zu verbrauchen bis:" : "Da consumare entro il:";
+            dateLabel = isDe ? "Zu verbrauchen bis:" : "Da consumare entro:";
             storageInstructions = isDe 
                 ? "Im Kühlschrank bei +4°C aufbewahren. Nicht wieder einfrieren." 
-                : "Conservare in frigorifero a +4 gradi. Non ricongelare.";
+                : "Conservare in frigorifero a +4°C. Non ricongelare. Non forare la confezione. Una volta aperto consumare entro 24h.";
             
             if (thawingDate.HasValue)
             {
@@ -67,15 +75,57 @@ public static class CrioLabelGenerator
             dateLabel = isDe ? "Mindestens haltbar bis Ende:" : "Da consumarsi preferibilmente entro fine:";
             storageInstructions = isDe 
                 ? "Bei -18°C aufbewahren. Nach dem Auftauen bei +4°C aufbewahren und innerhalb von 15 Tagen verbrauchen." 
-                : "Conservare a -18 gradi. Dopo lo scongelamento conservare a +4 gradi e consumare entro 15 giorni.";
+                : "Conservare a -18°C. Scongelare in frigorifero a +4°C. Consumare entro 15 giorni dallo scongelamento, mantenendo la confezione integra. Non ricongelare il prodotto. Non forare la confezione. Una volta aperto consumare entro 24h.";
         }
 
-        var ingredientiList = plate.Ingredients.Select(i => 
-            string.IsNullOrWhiteSpace(i.SubIngredients) 
-                ? i.IngredientName 
-                : $"{i.IngredientName} ({i.SubIngredients})"
-        );
+        // --- INIZIO MOTORE PERCENTUALI ---
+        decimal waterWeight = safeIngredients
+            .Where(i => i.IngredientName.Contains("Acqua", StringComparison.OrdinalIgnoreCase))
+            .Sum(i => i.WeightInGrams);
+
+        var ingredientiList = safeIngredients
+            .Where(i => !i.IngredientName.Contains("Acqua", StringComparison.OrdinalIgnoreCase))
+            .Select(i => 
+            {
+                decimal currentWeight = i.WeightInGrams;
+                
+                if (i.IngredientName.Contains("Pasta", StringComparison.OrdinalIgnoreCase) || 
+                    i.IngredientName.Contains("Gnocchetti", StringComparison.OrdinalIgnoreCase))
+                {
+                    currentWeight += waterWeight;
+                }
+
+                decimal percentage = totalWeightDecimal > 0 ? (currentWeight / totalWeightDecimal) * 100m : 0;
+                
+                // Se la % è maggiore o uguale a 1 stampa il numero, altrimenti stringa vuota
+                string percStr = percentage >= 1 ? $" {percentage.ToString("0")}%" : ""; 
+                
+                string nameWithPerc = $"{i.IngredientName}{percStr}";
+
+                return string.IsNullOrWhiteSpace(i.SubIngredients) 
+                    ? nameWithPerc 
+                    : $"{nameWithPerc} ({i.SubIngredients})";
+            });
+
         var ingredientiString = string.Join(", ", ingredientiList);
+        // --- FINE MOTORE PERCENTUALI ---
+
+        // --- INIZIO SCUDO ANTI-DOPPIONI ALLERGENI TRACCE ---
+        string safeAllergensInTraces = "";
+        if (!string.IsNullOrWhiteSpace(allergensInTraces))
+        {
+            var ingredientiUpper = ingredientiString.ToUpper();
+            
+            var tracesList = allergensInTraces
+                .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.Trim().ToUpper())
+                .Distinct() // Elimina doppioni all'interno delle stesse tracce (es. GRANO, GRANO -> GRANO)
+                .Where(t => !ingredientiUpper.Contains(t)) // Elimina la traccia se è già negli ingredienti (es. se LATTE è negli ingredienti, toglie LATTE dalle tracce)
+                .ToList();
+
+            safeAllergensInTraces = string.Join(", ", tracesList);
+        }
+        // --- FINE SCUDO ALLERGENI ---
 
         // --- VALORI NUTRIZIONALI (Dizionario) ---
         var energiaKcal = nutrition.EnergyKcal.ToString("0");
@@ -103,8 +153,6 @@ public static class CrioLabelGenerator
         string nProteine = isDe ? "Eiweiß" : "Proteine";
         string nSale = isDe ? "Salz" : "Sale";
 
-        // NOTA: Se le istruzioni di preparazione arrivano dal database, usciranno in italiano. 
-        // Qui prevediamo un fallback tradotto se il campo nel DB è vuoto.
         var prepString = "";
         if (!string.IsNullOrWhiteSpace(plate.PreparationInstructions))
         {
@@ -116,8 +164,8 @@ public static class CrioLabelGenerator
                 ? (isDe ? $"Mikrowelle: Folie einstechen, {plate.MicrowaveMinutes} Min. bei {plate.MicrowaveWattage}W erhitzen." 
                         : $"Microonde: forare pellicola, scaldare {plate.MicrowaveMinutes} min a {plate.MicrowaveWattage}W.")
                 : "";
-            var forno = isDe ? "Im traditionellen Ofen: Folie entfernen und auf 120 Grad erhitzen." 
-                             : "In forno tradizionale: togliere la pellicola e riscaldare a 120 gradi.";
+            var forno = isDe ? "Im traditionellen Ofen: Folie entfernen und auf 120°C erhitzen." 
+                             : "In forno tradizionale: togliere la pellicola e riscaldare a 120°C.";
             prepString = $"{microonde} {forno}".Trim();
         }
 
@@ -125,8 +173,8 @@ public static class CrioLabelGenerator
         
         sb.Append(@"^XA");
         sb.Append(@"^CI28");
-        sb.Append(@"^PW520"); // 6.5 cm
-        sb.Append(@"^LL1200"); // 15 cm
+        sb.Append(@"^PW520"); 
+        sb.Append(@"^LL1200"); 
         sb.Append(@"^FWR");   
         
         int currentX = 480;
@@ -135,39 +183,33 @@ public static class CrioLabelGenerator
         // Logo
         sb.Append($@"^FO390,935{LOGO_ZPL}");
 
-        // Bollo CE 
-        sb.Append(@"^FO250,1085^GB75,65,2^FS");
-        sb.Append(@"^FO300,1095^A0R,18,18^FDUE IT^FS");
-        sb.Append(@"^FO280,1092^A0R,18,18^FDE9E2U^FS");
-        sb.Append(@"^FO260,1110^A0R,18,18^FDCE^FS");
+        // Bollo Sanitario
+        sb.Append(@"^FO250,1080^GB75,80,2^FS");  
+        sb.Append(@"^FO295,1095^A0R,18,18^FDUE IT^FS"); 
+        sb.Append(@"^FO265,1088^A0R,18,18^FDE9E2U^FS"); 
 
         // FONT MAGGIORATI
-        int headerFont = 20;   // Era 22
-        int titleFont = 34;    // Era 40 (Titolo un po' più compatto)
-        int subtitleFont = 20; // Era 24
+        int headerFont = 20;   
+        int titleFont = 34;    
+        int subtitleFont = 20; 
         
-        int descFont = 20;     // Era 24 (Testi ben leggibili ma non giganti)
-        int lineStep = 24;     // Era 28 (L'interlinea: spazio che scala ad ogni riga)
-        int sectionGap = 8;    // Spazio extra tra paragrafi
-        int maxChars = 80;     
+        int descFont = 20;     
+        int lineStep = 23;     
+        int sectionGap = 8;    
+        int maxChars = 125;     
 
-        // Ragione Sociale e Prodotto in Italia (Tradotto)
         sb.Append($@"^FO{currentX},{startY}^A0R,{headerFont},{headerFont}^FDROSCOFF MEAL SRL - Via Messina 101, Seregno (MB) - {prodottoInItalia}^FS");
         currentX -= (lineStep + 10); 
 
-        // Nome Piatto (DAL DATABASE)
         sb.Append($@"^FO{currentX},{startY}^A0R,{titleFont},{titleFont}^FD{plate.Name}^FS");
         currentX -= (lineStep + 20); 
         
-        // Denominazione (Tradotta)
         sb.Append($@"^FO{currentX},{startY}^A0R,{subtitleFont},{subtitleFont}^FD{productDenomination}^FS");
         currentX -= lineStep; 
         
-        // Peso e Lotto (Tradotti)
         sb.Append($@"^FO{currentX},{startY}^A0R,{subtitleFont},{subtitleFont}^FD{pesoLabel} {totalWeight}g   |   {lottoLabel} {lotNumber}^FS");
         currentX -= lineStep; 
         
-        // Scadenza (Tradotta)
         sb.Append($@"^FO{currentX},{startY}^A0R,{subtitleFont},{subtitleFont}^FD{dateLabel} {expiryDateStr}^FS");
         currentX -= lineStep;
 
@@ -188,16 +230,19 @@ public static class CrioLabelGenerator
         }
         currentX -= sectionGap; 
 
-        // Allergeni
-        var allLines = SplitToLines($"{labelTraces} {allergensInTraces}", maxChars);
-        foreach (var line in allLines)
+        // Allergeni (Tracce) - Stampa solo se la lista delle tracce non è vuota
+        if (!string.IsNullOrWhiteSpace(safeAllergensInTraces))
         {
-            sb.Append($@"^FO{currentX},{startY}^A0R,{descFont},{descFont}^FD{line}^FS");
-            currentX -= lineStep;
+            var allLines = SplitToLines($"{labelTraces} {safeAllergensInTraces}", maxChars);
+            foreach (var line in allLines)
+            {
+                sb.Append($@"^FO{currentX},{startY}^A0R,{descFont},{descFont}^FD{line}^FS");
+                currentX -= lineStep;
+            }
+            currentX -= sectionGap;
         }
-        currentX -= sectionGap;
 
-        // Nutrizionali (Tradotti)
+        // Nutrizionali
         string nutString = $"{labelNutritional} {nEnergia} {energiaKj}Kj/{energiaKcal}Kcal - {nGrassi} {grassi}g ({nSaturi} {grassiSaturi}g) - {nCarbo} {carboidrati}g ({nZuccheri} {zuccheri}g) - {nFibre} {fibre}g - {nProteine} {proteine}g - {nSale} {sale}g";
         var nutLines = SplitToLines(nutString, maxChars);
         foreach (var line in nutLines)
@@ -225,11 +270,11 @@ public static class CrioLabelGenerator
             currentX -= lineStep;
         }
 
-        // Codice a Barre
+        // Codice a Barre in alto
         if (!string.IsNullOrWhiteSpace(plate.EanCode))
         {
             string barcodeCmd = plate.EanCode.Trim().Length <= 8 ? "^B8R" : "^BER";
-            sb.Append($@"^FO{prepStartX},940^BY2{barcodeCmd},40,Y,N^FD{plate.EanCode.Trim()}^FS");
+            sb.Append($@"^FO390,720^BY2{barcodeCmd},55,Y,N^FD{plate.EanCode.Trim()}^FS");
         }
 
         if (pauseAfter > 0)
